@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="@string/menu1_item1" />
+
+    <Button
+        android:id="@+id/btn_obnovit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_info"
+        android:layout_alignStart="@+id/btn_info"
+        android:layout_alignLeft="@+id/btn_info"
+        android:layout_alignEnd="@+id/btn_info"
+        android:layout_alignRight="@+id/btn_info"
+        android:onClick="menu1_skok2"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="@string/menu1_item2" />
+
+    <Button
+        android:id="@+id/btn_zavrit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_obnovit"
+        android:layout_alignStart="@+id/btn_obnovit"
+        android:layout_alignLeft="@+id/btn_obnovit"
+        android:layout_alignEnd="@+id/btn_obnovit"
+        android:layout_alignRight="@+id/btn_obnovit"
+        android:layout_marginTop="20dp"
+        android:onClick="menu1_skok3"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="@string/menu1_item3" />
+
+    <TextView
+        android:id="@+id/tv_oslavenec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_zavrit"
+        android:layout_alignStart="@+id/btn_zavrit"
+        android:layout_alignLeft="@+id/btn_zavrit"
+        android:layout_alignEnd="@+id/btn_zavrit"
+        android:layout_alignRight="@+id/btn_zavrit"
+        android:layout_marginTop="20dp"
+        android:text="ccc" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_oslavenec"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:clipToPadding="true"
+        android:fillViewport="false">
+
+        <TextView
+            android:id="@+id/tv_random"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="50dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textSize="14sp" />
+
+    </ScrollView>
+
+</RelativeLayout>

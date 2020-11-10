@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">Pivní appka</string>
+    <string name="tab_text_1">Úvod</string>
+    <string name="tab_text_2">Přidat hráče</string>
+    <string name="tab_text_3">Přidat zápas</string>
+    <string name="tab_text_4">Vypitá piva</string>
+    <string name="tab_text_5">Statistiky</string>
+
+
+    <string name="jmenoHrace">Jméno Hráče</string>
+    <string name="datumNarozeniHrace">Datum narození</string>
+    <string name="jeFanousek">Fanoušek?</string>
+    <string name="zobrazVse">zobraz vše</string>
+    <string name="pridat">přidat</string>
+    <string name="menu1_item1">info o aplikaci</string>
+    <string name="menu1_item2">Obnovit text</string>
+    <string name="menu1_item3">Zavřít aplikaci</string>
+    <string name="uprav_hrace">Uprav Hráče</string>
+    <string name="uprava_hrace">Úprava hráče</string>
+    <string name="smaz_hrace">Smaž hráče</string>
+    <string name="jste_si_jisti">Jste si jistí, že chcete provést tu to akci? Může způsobit nenávratné změny v počtu vypitých piv!</string>
+    <string name="ano">ano</string>
+    <string name="ne">ne</string>
+    <string name="datum">Zadej datum narození:</string>
+    <string name="kalendar">Kliknutím zadej datum narození:</string>
+    <string name="datum_format">dd.mm yyyy</string>
+    <string name="jmeno_soupeře">Zadejte jméno soupeře</string>
+    <string name="kalendar_zapas">Zadejte datum zápasu</string>
+    <string name="domaci">Domácí zápas?</string>
+    <string name="zobrazit_kalendar">Zobrazit Kalendář</string>
+    <string name="uprava_zapasu">Úprava zápasu</string>
+    <string name="uprav_zapas">Uprav zápas</string>
+    <string name="smaz_zapas">Smaž zápas</string>
+    <string name="vyber_hrace">Vyber hráče</string>
+    <string name="pridat_zapas">Přidat zápas</string>
+    <string name="uvod">Kliknutím na zápas můžete přidat či odebrat počet pivek</string>
+    <string name="pridat_vybrane_hrace">Přidat vybrané hráče</string>
+    <string name="zrusit">zrušit</string>
+    <string name="pocet_vypitych_velkych_piv">Počet velkých piv: </string>
+    <string name="pocet_malejch">Počet malejch: </string>
+    <string name="ok">ok</string>
+    <string name="hledej">Hledej</string>
+    <string name="zobrazeni_zapasu">Přepni pro zobrazení zápasů</string>
+    <string name="zobrazeni_hracu">Přepni pro zobrazení hráčů</string>
+    <string name="celkove">celkově</string>
+    <string name="zobraz_celkove">zobraz celkove statistiky</string>
+    <string name="tv_statistiky_celkove">Celkové statistiky dle sezony</string>
+    <string name="info_app">Informace o aplikaci</string>
+    <string name="info_app1">Aplikace slouží k počítání počtu piv vypitých na zápasech Liščího Trusu.
+        \n\nVeškeré zapsané údaje jsou zapisovány do lokální databáze a budou k dispozici i po vypnutí aplikace/telefonu.
+    \n\nPro rozběhnutí aplikace je potřeba telefon s androidem s API na úrovni 26 a výš (Android 8.0 Oreo)</string>
+    <string name="info_app2">Na úvodní obrazovce se nacházejí tři tlačítka a dvě textová pole:
+    \n\nInfo o aplikaci: Zobrazí dialog s informacemi o aplikaci a jednotlivých částech aplikace.
+    \n\nObnovit údaje: Znovu načte veškeré texty zobrazené zvolí náhodnou zajímavost.
+    \n\nZavřít: Zavře aplikaci.
+    \n\nNarozeniny: Zobrazí který z uložených hráčů/fanoušků bude má nejblíže k narozeninám.
+    \n\nNáhodná zajímavost: Náhodně zobrazí jednu z dvanácti zajímavostí zobrazených na základě vložených údajů. V případě že chybí data pro zobrazení zajímavosti, zobrazí se důvod.</string>
+    <string name="info_app3">Záložka přidat hráče slouží manipulaci s hráči a fanoušky Liščího Trusu, což zahrnuje přidání nového hráče, upravení hráče a zobrazení hráčů s detaily.
+    \n\nPro přidání hráče stačí vyplnit textové pole s hintem jméno hráče, vyplnit datum narození buď ručně do příslušného pole ve formátu dd.mm rrrr, případně kliknutím na tlačítko přidej datum narození. V případě, že se nejedná o hráče, ale o fanouška, stačí přepnout switch fanoušek? do zapnuté polohy. Následně stačí stisknout tlačítko přidat.
+    \nPo přidání se hráč zobrazí na seznamu hráčů v dolní části obrazovky. Na seznamu jsou nejřív zobrazení hráči a následně fanoušci.
+    \n\nPro zobrazení dialogu pro úpravu či smazání hráče stačí stisknout jméno hráče na seznamu. Úpravou hráče se nezmění jeho počet vypitých piv v databázi. Smazáním se smaže jeho záznam včetně vypitých piv.</string>
+    <string name="info_app4">Záložka přidat zápas slouží manipulaci s zápasy Liščího Trusu, což zahrnuje přidání nového zápasu, upravení zápasu a zobrazení hráčů s detaily.
+    \n\nPro přidání zápasu stačí vyplnit textové pole s hintem zadejte jméno soupeře, vyplnit datum zápasu buď ručně do příslušného pole ve formátu dd.mm rrrr, případně kliknutím na tlačítko zadejte datum zápasu. V případě, že se jedná o domácí zápas, stačí přepnout switch do zapnuté polohy. Pro venkovní zápas je třeba nechat switch vypnutý. Tlačítkem přidat se následně zápas zapíše do seznamu zápasů.
+    \n\nStisknutím tlačítka přidat se k zápasu automaticky přiřadí sezona podle data zápasu. V případě, že se zápas odehrává před jarem 2020 či po podzimu 2021 se jako sezona přiřadí ostatní.
+    \n\nZobrazení seznamu zápasů se dá filtrovat dle sezony pomocí spinneru. Zápasy jsou seřazeny dle data.
+    \n\nPro zobrazení dialogu pro úpravu či smazání zápasu stačí stisknout jméno hráče na seznamu. Úpravou hráče se nezmění jeho počet vypitých piv v databázi. Smazáním se smaže jeho záznam včetně vypitých piv. Při úpravě se dá ručně změnit sezona přiřazená k zápasu. V případě, že sezonu nechcete měnit, stačí spinner nechat v poloze neměnit sezonu.
+    \n\nTlačítko vybrat hráče je v současné době ve stádiu vývoje a nepřináší žádnou funkci.</string>
+    <string name="info_app5">V sekci vypitá piva se zobrazuje výpis zápasů dle vybrané sezony ve spinneru.
+    \n\nKliknutím na zápas se zobrazí seznam hráčů s počtem vypitých piv v aktuálním zápase. Pro zobrazení dialogu pro přidání či odebrání počtu vypitých piv stačí kliknout na hráče a ručně či tlačítky plus a mínus piva zadat. Dialogem se počet piv v daném zápase upravuje, nikoliv přidává. Pokud tedy hráč již vypil 5 piv a chcete přidat ještě jedno, je třeba uložit formulář s počtem 6.
+    \n\n Zadat lze jak malé tak velké pivo.</string>
+    <string name="info_app6">V sekci Statistika lze switchem přepnout mezi zobrazením hráčů a zápasů a následně spinnerem vybrat seznam k zobrazení. Pro pivaře je zde možnost hráč/fanoušek/vše, pro zápasy je zde rozdělení dle sezon/vše.
+    \n\nV zobrazeném seznamu lze hledat pomocí textového pole a tlačítka hledej. Hledat lze dle zobrazení buď jméno hráče nebo jméno soupeře. Vyhledávání funguje dle algoritmu %heslo%.
+    \n\nTlačítko zobraz celkové statistiky zobrazí celkové statistiky dle sezon a hráčů a následný celkový součet ze všech záznamů aplikace
+    \n\nPro zobrazení detailních statistik stačí kliknout na vybraného hráče/zápas. I zde se dá filtrovat pomocí sezon či výběru fanoušek/hráč. Tlačítkem celkově se zobrazí celkové statistiky.</string>
+    <string-array name="sezony">
+        <item>Zobraz vše</item>
+        <item>Podzim 2020</item>
+        <item>Jaro 2021</item>
+        <item>Podzim 2021</item>
+        <item>Jaro 2022</item>
+        <item>Podzim 2022</item>
+        <item>Ostatní</item>
+    </string-array>
+
+    <string-array name="sezony_dialog">
+        <item>Neměnit sezonu</item>
+        <item>Jaro 2020</item>
+        <item>Podzim 2020</item>
+        <item>Jaro 2021</item>
+        <item>Ostatní</item>
+    </string-array>
+
+    <string-array name="hraci">
+        <item>Zobraz vše</item>
+        <item>Hráči</item>
+        <item>Fanoušci</item>
+    </string-array>
+
+<!--    <string-array name="statistiky_dialog_hraci">
+        <item>Zobraz vše</item>
+        <item>Hráči</item>
+        <item>Fanoušci</item>
+    </string-array>-->
+
+    <string-array name="statistiky_sezony">
+        <item>Vyber sezonu</item>
+        <item>Zobraz vše</item>
+        <item>Jaro 2020</item>
+        <item>Podzim 2020</item>
+        <item>Jaro 2021</item>
+        <item>Ostatní</item>
+    </string-array>
+
+    <string-array name="info_app">
+        <item>Informace o aplikaci</item>
+        <item>Úvod</item>
+        <item>Přidat hráče</item>
+        <item>Přidat zápas</item>
+        <item>Vypitá piva</item>
+        <item>Statistiky</item>
+    </string-array>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+</resources>

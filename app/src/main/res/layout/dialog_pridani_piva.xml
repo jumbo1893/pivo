@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/im_minusMaly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toEndOf="@+id/im_plus"
+        app:layout_constraintTop_toBottomOf="@id/tv_pocetPiv"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <ImageView
+        android:id="@+id/im_plusMaly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toEndOf="@+id/et_pocetPiv"
+        app:layout_constraintTop_toBottomOf="@id/tv_pocetPiv"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <TextView
+        android:id="@+id/tv_jmenoHrace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="ggggggg"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/im_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/et_pocetPiv"
+        app:layout_constraintTop_toBottomOf="@+id/tv_jmenoHrace"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <TextView
+        android:id="@+id/tv_pocetPiv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/pocet_vypitych_velkych_piv"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_jmenoHrace" />
+
+    <TextView
+        android:id="@+id/tv_pocetPivMaly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/pocet_malejch"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pocetPiv" />
+
+    <EditText
+        android:id="@+id/et_pocetPiv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="2"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/tv_pocetPiv"
+        app:layout_constraintTop_toBottomOf="@+id/tv_jmenoHrace" />
+
+    <EditText
+        android:id="@+id/et_pocetPivMaly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="2"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@id/tv_pocetPiv"
+        app:layout_constraintTop_toBottomOf="@id/et_pocetPiv" />
+
+    <ImageView
+        android:id="@+id/im_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/im_plus"
+        app:layout_constraintTop_toBottomOf="@+id/tv_jmenoHrace"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <Button
+        android:id="@+id/btn_zavrit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/ok"
+        app:layout_constraintEnd_toStartOf="@+id/btn_zrusit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_pocetPivMaly" />
+
+    <Button
+        android:id="@+id/btn_zrusit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/zrusit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_zavrit"
+        app:layout_constraintTop_toBottomOf="@id/tv_pocetPivMaly" />
+</androidx.constraintlayout.widget.ConstraintLayout>

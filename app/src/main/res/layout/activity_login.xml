@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/et_cislo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Tel. číslo pro verifikaci"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/et_kod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="kód z sms"
+        android:textSize="24sp" />
+    <Button
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zašli verifikační kód"
+        android:id="@+id/btn_verify"/>
+
+
+</LinearLayout>

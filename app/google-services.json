@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331388700218",
+    "firebase_url": "https://pivo-chat.firebaseio.com",
+    "project_id": "pivo-chat",
+    "storage_bucket": "pivo-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331388700218:android:42ece334dac83c2d8c9703",
+        "android_client_info": {
+          "package_name": "com.jumbo.pivo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331388700218-os5ih0058qpjsjnntqt90adsvnch53ed.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jumbo.pivo",
+            "certificate_hash": "6c321fc97d430804a80fcb8a598bc2f7456402e2"
+          }
+        },
+        {
+          "client_id": "331388700218-4sd721fuqd1bj7g3nl3ed1gvf229r2vv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdB7J6UGjg953vCaBXxGwz3d6yNwD98OI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331388700218-4sd721fuqd1bj7g3nl3ed1gvf229r2vv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

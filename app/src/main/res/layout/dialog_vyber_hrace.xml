@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Button
+        android:id="@+id/btn_vybratHrace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/pridat_vybrane_hrace"
+        app:layout_constraintEnd_toStartOf="@+id/btn_zrusit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_vyberHrace" />
+
+    <Button
+        android:id="@+id/btn_zrusit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/zrusit"
+        app:layout_constraintStart_toEndOf="@id/btn_vybratHrace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_vyberHrace" />
+
+    <ListView
+        android:id="@+id/lv_vyberHrace"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:choiceMode="multipleChoice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ListView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
