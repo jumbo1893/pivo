@@ -599,45 +599,58 @@ public class StatistikyFrag extends Fragment {
     //Spinner se řídí dle enumu HracEnum a Sezona. Podle polohy a for cyklu pak volá privátní metody pro výpočet poščtu piv a přidává je do stringu na zobrazení
     private List<String> vratListCelkovychVypitychPiv() {
         List<String> listCelkovychPiv = new ArrayList<>();
-        String celkovaPiva = "";
         //pokud je zobrazen ve switchi zápas
         if (swZobrazeniZapasu) {
-            switch (poziceSpinneru) {
-                case 0:
-                    //celkovaPiva = "Celkově se vypilo " + spocitejCelkovaVelkaPiva() + "piv za všechny sezony";
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    break;
+            //pokud se žádná piva v sezoně nevypila tak nemá cenu projíždět cyklus. Akorát se do listu přidá upozornění že žádný piva se nevypila
+            if (spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.Vse) == 0 && spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.Vse) == 0) {
+                listCelkovychPiv.add("V sezoně " + Sezona.zaradSezonuDleComba(poziceSpinneru) + " se zatím nevypila žádná piva");
             }
+            else {
+                //projíždí všechny hodnoty z enumu hráč/fanoušek
+                for (int i = 0; i < HracEnum.values().length; i++) {
+                    //první záznam je celkový
+                    if (i == 0) {
+                        listCelkovychPiv.add("Celkově " + HracEnum.zaradHraceDleComba(i).getMnozneCisloTextu() + " vypili " + spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.Vse) + " velkých a "
+                                + spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.Vse) + " malých piv za sezonu " + Sezona.zaradSezonuDleComba(poziceSpinneru));
+                    }
+                    //následuje podle enumu hráč/fanoušek
+                    else {
+                        //podmínka která se ptá jestli se vypilo aspoň jedno pivo
+                        if (spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.zaradHraceDleComba(i)) > 0 || (spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.zaradHraceDleComba(i)) > 0)) {
 
+                            listCelkovychPiv.add("Celkově " + HracEnum.zaradHraceDleComba(i).getMnozneCisloTextu() + " vypili " + spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.zaradHraceDleComba(i)) + " velkých a "
+                                    + spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(poziceSpinneru), HracEnum.zaradHraceDleComba(i)) + " malých piv za sezonu " + Sezona.zaradSezonuDleComba(poziceSpinneru));
+                        }
+                        //pokud hráč/fanoušek nic nevypil tak se vypíše že v této sezoně se nic nevypilo
+                        else {
+                            listCelkovychPiv.add("V sezoně " + Sezona.zaradSezonuDleComba(poziceSpinneru) + " " + HracEnum.zaradHraceDleComba(i).getMnozneCisloTextu() + " nevypili zatím nic");
+                        }
+                    }
+                }
+            }
         }
         //pokud je zobrazen ve switchi seznam hráčů
         else {
-            //projedou se všechny pozice spinneru pro sezony
-            for (int i = 0; i < Sezona.values().length; i++) {
-                //pomocí statické metody z enumu HracEnum se dopočítává jestli je spinner na jaké je spinner pozici
-                //na pozici 0 se VŽDY dopočítávají celková piva za všechny sezony
-                if (i == 0) {
-                    celkovaPiva = "Celkově " + HracEnum.zaradSezonuDleComba(poziceSpinneru).getMnozneCisloTextu() + "  vypili " + spocitejSezonniVelkaPiva(Sezona.Vse, HracEnum.zaradSezonuDleComba(poziceSpinneru)) + " velkých a "
-                            + spocitejSezonniMalaPiva(Sezona.Vse, HracEnum.zaradSezonuDleComba(poziceSpinneru)) + " malých piv za všechny sezony";
-                    listCelkovychPiv.add(celkovaPiva);
-                }
-                //zde se dopočítavaj celková piva za danou sezonu dle for cyklu. Pokud je v dané sezoně počet piv 0 řádek se vynechává
-                else {
-                    if (spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradSezonuDleComba(poziceSpinneru)) > 0 || (spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradSezonuDleComba(poziceSpinneru)) > 0 )) {
-                        celkovaPiva = "Za sezonu " + Sezona.zaradSezonuDleComba(i) + " se vypilo " + spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradSezonuDleComba(poziceSpinneru))
-                                + " velkých a " + spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradSezonuDleComba(poziceSpinneru)) + " malých piv.";
-                        listCelkovychPiv.add(celkovaPiva);
+            //pokud se žádná piva v sezoně nevypila tak nemá cenu projíždět cyklus. Akorát se do listu přidá upozornění že žádný piva se nevypila
+            if (spocitejSezonniVelkaPiva(Sezona.Vse, HracEnum.zaradHraceDleComba(poziceSpinneru)) == 0 && spocitejSezonniMalaPiva(Sezona.Vse, HracEnum.zaradHraceDleComba(poziceSpinneru)) == 0) {
+                listCelkovychPiv.add("V sezoně " + Sezona.zaradSezonuDleComba(poziceSpinneru) + " se zatím nevypila žádná piva");
+            }
+            else {
+                //projedou se všechny pozice spinneru pro sezony
+                for (int i = 0; i < Sezona.values().length; i++) {
+                    //pomocí statické metody z enumu HracEnum se dopočítává jestli je spinner na jaké je spinner pozici
+                    //na pozici 0 se VŽDY dopočítávají celková piva za všechny sezony
+                    if (i == 0) {
+                        listCelkovychPiv.add("Celkově " + HracEnum.zaradHraceDleComba(poziceSpinneru).getMnozneCisloTextu() + "  vypili " + spocitejSezonniVelkaPiva(Sezona.Vse, HracEnum.zaradHraceDleComba(poziceSpinneru)) + " velkých a "
+                                + spocitejSezonniMalaPiva(Sezona.Vse, HracEnum.zaradHraceDleComba(poziceSpinneru)) + " malých piv za všechny sezony");
+                    }
+                    //zde se dopočítavaj celková piva za danou sezonu dle for cyklu. Pokud je v dané sezoně počet piv 0 řádek se vynechává
+                    else {
+                        //podmínka která se ptá jestli se vypilo aspoň jedno pivo
+                        if (spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradHraceDleComba(poziceSpinneru)) > 0 || (spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradHraceDleComba(poziceSpinneru)) > 0)) {
+                            listCelkovychPiv.add("Za sezonu " + Sezona.zaradSezonuDleComba(i) + " se vypilo " + spocitejSezonniVelkaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradHraceDleComba(poziceSpinneru))
+                                    + " velkých a " + spocitejSezonniMalaPiva(Sezona.zaradSezonuDleComba(i), HracEnum.zaradHraceDleComba(poziceSpinneru)) + " malých piv.");
+                        }
                     }
                 }
             }
@@ -655,9 +668,6 @@ public class StatistikyFrag extends Fragment {
         tv_statsCelkem = (TextView) statsView.findViewById(R.id.tv_statsCelkem);
         celkemStatsArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, vratListCelkovychVypitychPiv());
         lv_statsCelkem.setAdapter(celkemStatsArrayAdapter);
-
-
-
 
         statsDialog.setView(statsView);
         final AlertDialog dialog = statsDialog.create();

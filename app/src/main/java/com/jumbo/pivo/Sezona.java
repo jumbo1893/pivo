@@ -22,8 +22,9 @@ public enum Sezona {
 
     public static Sezona zaradSezonuDleComba(int combobox) {
         switch (combobox) {
-            case 0: //nic, vracím default ostatní
-                break;
+            case 0:
+                Log.d(TAG, "zařazuji sezonu podle comboboxu s výsledkem " + Vse);
+                return Vse;
             case 1:
                 Log.d(TAG, "zařazuji sezonu podle comboboxu s výsledkem " + Podzim2020);
                 return Podzim2020;

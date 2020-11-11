@@ -22,16 +22,13 @@ public enum HracEnum {
 
     }
 
-    public static HracEnum zaradSezonuDleComba(int combobox) {
+    public static HracEnum zaradHraceDleComba(int combobox) {
         switch (combobox) {
             case 0:
-                Log.d(TAG, "zařazuji sezonu podle comboboxu s výsledkem " + Vse);
                 return Vse;
             case 1:
-                Log.d(TAG, "zařazuji sezonu podle comboboxu s výsledkem " + Hrac);
                 return Hrac;
             case 2:
-                Log.d(TAG, "zařazuji sezonu podle comboboxu s výsledkem " + Fanousek);
                 return Fanousek;
         }
         Log.d(TAG, "Nebyla nalezena sezona dle comboboxu, vracím " + Vse);
