@@ -156,7 +156,7 @@ public class PridatPivoFrag extends Fragment{
                         final AlertDialog.Builder pocetPivDialog = new AlertDialog.Builder(getActivity());
                         View pocetPivView = getLayoutInflater().inflate(R.layout.dialog_pridani_piva, null);
                         btn_ok = (Button) pocetPivView.findViewById(R.id.btn_zavrit);
-                        btn_zrusit = (Button) pocetPivView.findViewById(R.id.btn_zrusit);
+                        btn_zrusit = (Button) pocetPivView.findViewById(R.id.btn_ok);
                         im_plus = (ImageView) pocetPivView.findViewById(R.id.im_plus);
                         im_minus = (ImageView) pocetPivView.findViewById(R.id.im_minus);
                         et_pocetPiv = (EditText) pocetPivView.findViewById(R.id.et_pocetPiv);
@@ -179,12 +179,6 @@ public class PridatPivoFrag extends Fragment{
                             vyrovnaniMalychPiv = oznacenyHrac.getPocetPiv().getPocetMalych();
                             vyrovnaniVelkychPiv = oznacenyHrac.getPocetPiv().getPocetVelkych();
                             Log.d(TAG, oznacenyHrac + " má záznam v pivech u zápasu " + oznacenyZapas + ". nastavuji počet piv: " + oznacenyHrac.getPocetPiv());
-                        //}
-                        //else {
-                           // et_pocetPiv.setText(String.valueOf(0));
-                            //et_pocetPivMaly.setText(String.valueOf(0));
-                           // Log.d(TAG, oznacenyHrac + " nemá záznam v pivech u zápasu" + oznacenyZapas);
-                     //   }
 
                         //tlačítko plus
                         im_plus.setOnClickListener(new View.OnClickListener() {

@@ -16,7 +16,7 @@ public class Pivo extends Polozka {
 
     @Override
     public String toString() {
-        return pocetMalych + " malejch a " + pocetVelkych + " velkejch piv";
+        return pocetVelkych + " velkejch a " + pocetMalych + " malejch piv";
 
     }
 

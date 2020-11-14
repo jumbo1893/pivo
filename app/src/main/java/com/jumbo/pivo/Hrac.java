@@ -13,7 +13,6 @@ public class Hrac extends Polozka {
     //1 = detailní zobrazení pro seznam hráčů s datem narození a věkem, 0 pro spojení Hráč + jméno, 2 pro Hráč + jméno + počet piv
     private boolean oznacenyHrac;
     private Pivo pocetPiv;
-    private ZobrazeniHrace zobrazeniHrace;
 
     /**konstruktor
      * @param jmeno jméno hráče
@@ -29,23 +28,23 @@ public class Hrac extends Polozka {
         this.pocetPiv = new Pivo();
     }
 
-    public Hrac(String jmeno, String datum, boolean fanousek, ZobrazeniHrace zobrazeniHrace) {
+    public Hrac(String jmeno, String datum, boolean fanousek, ZobrazeniPolozky zobrazeniPolozky) {
         this.jmeno = jmeno;
         this.datum = datum;
         this.fanousek = fanousek;
         this.vek = Datum.urciVek(datum);
         this.dniDoNarozenin = Datum.setDniDoNarozenin(datum);
-        this.zobrazeniHrace = zobrazeniHrace;
+        this.zobrazeniPolozky = zobrazeniPolozky;
     }
 
-    public Hrac(String jmeno, String datum, boolean fanousek, Pivo pocetPiv, ZobrazeniHrace zobrazeniHrace) {
+    public Hrac(String jmeno, String datum, boolean fanousek, Pivo pocetPiv, ZobrazeniPolozky zobrazeniPolozky) {
         this.jmeno = jmeno;
         this.datum = datum;
         this.fanousek = fanousek;
         this.vek = Datum.urciVek(datum);
         this.dniDoNarozenin = Datum.setDniDoNarozenin(datum);
         this.pocetPiv = pocetPiv;
-        this.zobrazeniHrace = zobrazeniHrace;
+        this.zobrazeniPolozky = zobrazeniPolozky;
     }
 
 
@@ -59,7 +58,7 @@ public class Hrac extends Polozka {
 
     @Override
     public String toString() {
-        if (zobrazeniHrace == ZobrazeniHrace.Zakladni) {
+        if (zobrazeniPolozky == ZobrazeniPolozky.Zakladni) {
             if (fanousek) {
                 return "Fanoušek " + jmeno;
             } else {
@@ -67,7 +66,7 @@ public class Hrac extends Polozka {
             }
 
         }
-        else if (zobrazeniHrace == ZobrazeniHrace.Detailni) {
+        else if (zobrazeniPolozky == ZobrazeniPolozky.Detailni) {
             if (fanousek) {
                 return "Fanoušek " + jmeno + ", datum narození: " + Datum.zmenDatumDoFront(datum) + ", věk: " + vek;
             } else {
@@ -75,7 +74,7 @@ public class Hrac extends Polozka {
             }
         }
         else {
-            if (zobrazeniHrace == ZobrazeniHrace.Pivni) {
+            if (zobrazeniPolozky == ZobrazeniPolozky.Pivni) {
                 return "Fanoušek " + jmeno + ", " + pocetPiv;
             } else {
                 return "Hráč " + jmeno + ", " + pocetPiv;
@@ -144,12 +143,12 @@ public class Hrac extends Polozka {
         this.pocetPiv = pocetPiv;
     }
 
-    public ZobrazeniHrace getZobrazeniHrace() {
-        return zobrazeniHrace;
+    public ZobrazeniPolozky getZobrazeniPolozky() {
+        return zobrazeniPolozky;
     }
 
-    public void setZobrazeniHrace(ZobrazeniHrace zobrazeniHrace) {
-        this.zobrazeniHrace = zobrazeniHrace;
+    public void setZobrazeniPolozky(ZobrazeniPolozky zobrazeniPolozky) {
+        this.zobrazeniPolozky = zobrazeniPolozky;
     }
 
 

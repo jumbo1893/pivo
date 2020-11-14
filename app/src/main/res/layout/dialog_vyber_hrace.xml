@@ -10,12 +10,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/pridat_vybrane_hrace"
-        app:layout_constraintEnd_toStartOf="@+id/btn_zrusit"
+        app:layout_constraintEnd_toStartOf="@+id/btn_ok"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lv_vyberHrace" />
 
     <Button
-        android:id="@+id/btn_zrusit"
+        android:id="@+id/btn_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

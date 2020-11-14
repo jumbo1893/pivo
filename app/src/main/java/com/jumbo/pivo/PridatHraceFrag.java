@@ -16,15 +16,10 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -78,7 +73,7 @@ public class PridatHraceFrag extends Fragment {
                 seznamHracu.clear();
                 for(QueryDocumentSnapshot documentSnapshot : value) {
                     Hrac hrac = documentSnapshot.toObject(Hrac.class);
-                    hrac.setZobrazeniHrace(ZobrazeniHrace.Detailni);
+                    hrac.setZobrazeniPolozky(ZobrazeniPolozky.Detailni);
                     seznamHracu.add(hrac);
                     Log.d(TAG, "Automaticky načten seznam hráčů po změně " + seznamHracu);
                 }

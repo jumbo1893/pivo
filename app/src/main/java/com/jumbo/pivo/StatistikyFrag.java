@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,14 +28,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.jumbo.pivo.komparator.SeradHracePrvni;
+import com.jumbo.pivo.komparator.SeradPodlePiv;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StatistikyFrag extends Fragment {
 
-    private Button btn_hledej, btn_celkove, btn_zrusit, btn_celkoveStats;
+    private Button btn_hledej, btn_seradit, btn_ok, btn_celkoveStats;
     private Switch sw_hracZapas;
     private Spinner sp_vyberHraceSezony, sp_podrobnyVyber;
     private TextView tv_nadpis, tv_statsCelkem;
@@ -43,17 +44,15 @@ public class StatistikyFrag extends Fragment {
     private boolean swZobrazeniZapasu;
 
     private ArrayAdapter spinnerArrayAdapter;
-    private ArrayAdapter spinnerHraciDialogArrayAdapter;
-    private ArrayAdapter spinnerZapasyDialogArrayAdapter;
-    private ArrayAdapter listViewZapasArrayAdapter;
-    private ArrayAdapter listViewHraciArrayAdapter;
-    private ArrayAdapter listViewZapasyVyberArrayAdapter;
+    private ArrayAdapter spinnerDialogArrayAdapter;
+    private ArrayAdapter listViewArrayAdapter;
     private ArrayAdapter celkemStatsArrayAdapter;
+    private ArrayAdapter detailListViewAdapter;
     private ValidacePoli validace = new ValidacePoli();
 
-    private int idHrace;
-    private int idZapasu;
+    private Polozka oznacenaPolozka;
     private int poziceSpinneru = 0;
+    private int poziceSpinneruVDialogu = 0;
 
     private List<Zapas> seznamZapasu;
     private List<Hrac> seznamHracu;
@@ -68,6 +67,27 @@ public class StatistikyFrag extends Fragment {
     public void onStart() {
         super.onStart();
         //kontrola jestli se něco změnilo na serveru ve firestore. Pokud ano vykoná se akce
+        collectionReferenceHrac = db.collection("hrac");
+        collectionReferenceHrac.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d(TAG, "Chyba " + error.toString());
+                    return;
+                }
+                seznamHracu = new ArrayList<>();
+                seznamHracu.clear();
+                for(QueryDocumentSnapshot documentSnapshot : value) {
+                    Hrac hrac = documentSnapshot.toObject(Hrac.class);
+                    hrac.setZobrazeniPolozky(ZobrazeniPolozky.Zakladni);
+                    seznamHracu.add(hrac);
+                    Log.d(TAG, "Automaticky načten seznam hráčů po změně " + seznamHracu);
+                }
+                seznamHracu.sort(new SeradHracePrvni());
+                zobrazListView();
+            }
+
+        });
         collectionReferenceZapas = db.collection("zapas");
         collectionReferenceZapas.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -83,31 +103,11 @@ public class StatistikyFrag extends Fragment {
                     seznamZapasu.add(zapas);
                     Log.d(TAG, "Automaticky načten seznam zápasů po změně " + seznamZapasu);
                 }
-                //zobrazListViewDleSpinneru(seznamZapasu);
+                zobrazListView();
             }
 
         });
-        collectionReferenceHrac = db.collection("hrac");
-        collectionReferenceHrac.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.d(TAG, "Chyba " + error.toString());
-                    return;
-                }
-                seznamHracu = new ArrayList<>();
-                seznamHracu.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
-                    Hrac hrac = documentSnapshot.toObject(Hrac.class);
-                    hrac.setZobrazeniHrace(ZobrazeniHrace.Detailni);
-                    seznamHracu.add(hrac);
-                    Log.d(TAG, "Automaticky načten seznam hráčů po změně " + seznamHracu);
-                }
-                seznamHracu.sort(new SeradHracePrvni());
-                //zobrazHraceNaListView(seznamHracu);
-            }
 
-        });
 
     }
 
@@ -139,24 +139,20 @@ public class StatistikyFrag extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-
                     //zobrazObrazovkuSHraci();
                     setSwZobrazeniZapasu(false);
                     sw_hracZapas.setText(R.string.zobrazeni_zapasu);
                     nastavZobrazeniSpinneru(false);
-
+                    zobrazListView();
                 }
                 else {
-
                     setSwZobrazeniZapasu(true);
                     sw_hracZapas.setText(R.string.zobrazeni_hracu);
                     nastavZobrazeniSpinneru(true);
-                    //zobrazObrazovkuSeZapasy();
-
+                    zobrazListView();
                 }
             }
         });
-
         btn_celkoveStats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,15 +160,17 @@ public class StatistikyFrag extends Fragment {
             }
         });
         nastavZobrazeniSpinneru(swZobrazeniZapasu);
+        nastavKlikNaListview();
 
         return view;
     }
 
-
+    //podle toho jestli je swichtnuto na zobrazen zápasů nebo hráčů to nastavuje spinner se sezonama nebo hráčema/fanouškama
     private void nastavZobrazeniSpinneru(boolean zobrazeniZapasu) {
         if (zobrazeniZapasu) {
             spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.sezony));
             sp_vyberHraceSezony.setAdapter(spinnerArrayAdapter);
+
         }
         else {
             spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.hraci));
@@ -185,6 +183,7 @@ public class StatistikyFrag extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 poziceSpinneru = position;
+                zobrazListView();
                 Log.d(TAG, "pozice spinneru " + position + " nastavuji jako " + poziceSpinneru);
 
             }
@@ -192,356 +191,13 @@ public class StatistikyFrag extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 poziceSpinneru = 0;
+                zobrazListView();
                 Log.d(TAG, "pozice spinneru neni zadna, nastavuji jako " + poziceSpinneru);
             }
         });
 
     }
 
-
-/**
-     * zobrazí všechny zápasy z databáze na listview
-     * @param dBadapter2
-     */
-
-   /* private void zobrazVsechnyHraceNaListView(DBadapter dBadapter2) {
-        listViewHraciArrayAdapter = new ArrayAdapter<Hrac>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.vyberVsechnyHrace(0));
-        lv_seznam.setAdapter(listViewHraciArrayAdapter);
-    }
-
-
-*//**zobrazí vybrané zápasy dle spinneru na listview
-     * @param dBadapter2
-     * @param pozice
-     *//*
-
-    private void zobrazHraceNaListView(DBadapter dBadapter2, int pozice) {
-        listViewHraciArrayAdapter = new ArrayAdapter<Hrac>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.vyberHrace(pozice));
-        lv_seznam.setAdapter(listViewHraciArrayAdapter);
-    }
-
-
-
-*//**
-     * zobrazí listviewdle spinneru i s volbou zobrazit vše
-     *//*
-
-    private void zobrazListViewHracuDleSpinneru(int polohaSpinneruHraci) {
-        if (polohaSpinneruHraci == 1) {
-            zobrazVsechnyHraceNaListView(dBadapter);
-        }
-        else if (polohaSpinneruHraci == 0) {
-            List<String> vyberHrace = new ArrayList<>();
-            listViewHraciArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, vyberHrace);
-            lv_seznam.setAdapter(listViewHraciArrayAdapter);
-        }
-        else {
-            zobrazHraceNaListView(dBadapter, polohaSpinneruHraci);
-        }
-
-    }
-
-
-*//**zobrazení vyfiltrovaných zápasů z db adaptéru, primárně určené pro výpis dialogového okna
-     * @param dBadapter2
-     * @param position pozice druhého spinneru
-     *//*
-
-    private void zobrazZapasyNaListViewProStatistiku(DBadapter dBadapter2, int position) {
-        listViewZapasyVyberArrayAdapter = new ArrayAdapter<Zapas>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.zobrazZapasyProStatistiku(idHrace, position));
-        lv_seznamVyber.setAdapter(listViewZapasyVyberArrayAdapter);
-    }
-
-
-*//**zobrazení vyfiltrovaných hráčů z db adaptéru, primárně určené pro výpis dialogového okna
-     * @param dBadapter2
-     * @param position pozice druhého spinneru
-     *//*
-
-    private void zobrazHraceNaListViewProStatistiku(DBadapter dBadapter2, int position) {
-        listViewZapasyVyberArrayAdapter = new ArrayAdapter<Hrac>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.zobrazHraceProStatistiku(idHrace, position));
-        lv_seznamVyber.setAdapter(listViewZapasyVyberArrayAdapter);
-    }
-
-
-*//**vypíše seznam všech zápasů
-     * @param dBadapter2
-     *//*
-
-    private void zobrazZapasyNaListView(DBadapter dBadapter2) {
-        listViewZapasArrayAdapter = new ArrayAdapter<Zapas>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.vyberVsechnyZapasy());
-        lv_seznam.setAdapter(listViewZapasArrayAdapter);
-    }
-
-
-*//**podle pozice vypíše seznam zápasů dle sezony
-     * @param dBadapter2
-     * @param pozice
-     *//*
-
-    private void zobrazSezonyNaListView(DBadapter dBadapter2, int pozice) {
-        listViewZapasArrayAdapter = new ArrayAdapter<Zapas>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.vyberSezonu(pozice));
-        lv_seznam.setAdapter(listViewZapasArrayAdapter);
-    }
-
-
-*//**podle polohy spinneru zavolá buď metodu pro výpis všech zápasů či metodu pro výpis konkrétní sezony dle filteru
-     * @param polohaSpinneruZapasy
-     *//*
-
-    private void zobrazListViewZapasuDleSpinneru(int polohaSpinneruZapasy) {
-        polohaSpinneruZapasy--;
-        if (polohaSpinneruZapasy == 0) {
-            zobrazZapasyNaListView(dBadapter);
-        }
-        else if (polohaSpinneruZapasy == -1) {
-            List<String> vyberZapas = new ArrayList<>();
-            listViewHraciArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, vyberZapas);
-            lv_seznam.setAdapter(listViewHraciArrayAdapter);
-        }
-        else {
-            zobrazSezonyNaListView(dBadapter, polohaSpinneruZapasy);
-        }
-
-    }
-
-
-*//**zobrazí na listview arraylist načtený z databáze po stisku hledat
-     * @param dBadapter2
-     * @param pozice
-     *//*
-
-    private void zobrazHledaneZapasy(DBadapter dBadapter2, int pozice, String hledaneSlovo) {
-        listViewZapasArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.hledatZapasySezona(pozice, hledaneSlovo));
-        lv_seznam.setAdapter(listViewZapasArrayAdapter);
-    }
-
-
-*//**zobrazí na listview arraylist načtený z databáze po stisku hledat
-     * @param
-     * @param
-     *//*
-
-    private void zobrazHledaneHrace(DBadapter dBadapter2, int pozice, String hledaneSlovo) {
-        listViewHraciArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, dBadapter2.hledatHrace(pozice, hledaneSlovo));
-        lv_seznam.setAdapter(listViewHraciArrayAdapter);
-    }
-
-
-
-    public void setIdHrace(int idHrace) {
-        this.idHrace = idHrace;
-    }
-
-
-    public void setIdZapasu(int idZapasu) {
-        this.idZapasu = idZapasu;
-    }
-
-    private void zobrazObrazovkuSHraci() {
-
-        sw_hracZapas.setText(R.string.zobrazeni_zapasu);
-
-        //spárování spinneru a arraylistu pro zobrazení ze stringu
-        spinnerHraciArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.statistiky_hraci));
-        spinnerHraciArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_vyberHraceSezony.setAdapter(spinnerHraciArrayAdapter);
-
-        //zobrazení list view podle polohy na spinneru
-        sp_vyberHraceSezony.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                zobrazListViewHracuDleSpinneru(position);
-                setHracPosition(position);
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //tlačítko hledat
-        btn_hledej.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                et_hledej.setHint("zadej heslo");
-                if (validace.zvalidujJmeno(et_hledej)) {
-                    Toast.makeText(getActivity(), "Buď si zadal jméno delší než 100 znaků nebo si použil zakázané znaky. Povoleny jsou pouze alfanumerické znaky, podtržítko a pomlčka", Toast.LENGTH_LONG).show();
-                } else {
-                    zobrazHledaneHrace(dBadapter, hracPosition, et_hledej.getText().toString());
-                }
-            }
-        });
-
-
-        lv_seznam.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                final Hrac oznacenyHrac = (Hrac) parent.getItemAtPosition(position);
-                setIdHrace(oznacenyHrac.getId());
-
-                //definování dialogového okna pro zobrazení statistik
-                final AlertDialog.Builder hracDialog = new AlertDialog.Builder(getActivity());
-
-                //definování tlačítek a layoutu v dialogu pro zobrazení statistik
-                View hracView = getLayoutInflater().inflate(R.layout.dialog_vyber_statistiky, null);
-                btn_celkove = (Button) hracView.findViewById(R.id.btn_celkove);
-                btn_zrusit = (Button) hracView.findViewById(R.id.btn_zrusit);
-                lv_seznamVyber = (ListView) hracView.findViewById(R.id.lv_seznamVyber);
-                sp_podrobnyVyber = (Spinner) hracView.findViewById(R.id.sp_podrobnyVyber);
-                tv_nadpis = (TextView) hracView.findViewById(R.id.tv_nadpis);
-
-                tv_nadpis.setText("Statistiky pro " + oznacenyHrac.getJmeno());
-
-                hracDialog.setView(hracView);
-                final AlertDialog dialog = hracDialog.create();
-                dialog.show();
-
-                btn_zrusit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-
-                //spárování spinneru u prvního dialogu a arraylistu pro zobrazení ze stringu
-                spinnerZapasyDialogArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.sezony));
-                spinnerZapasyDialogArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                sp_podrobnyVyber.setAdapter(spinnerZapasyDialogArrayAdapter);
-
-                //zobrazení druhého list view podle polohy na spinneru
-                sp_podrobnyVyber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                        zobrazZapasyNaListViewProStatistiku(dBadapter, position);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
-
-                btn_celkove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(), oznacenyHrac.getJmeno() + " vypil celkově " + dBadapter.getCelkovyPocetMalychPiv() + " malých piv a " + dBadapter.getCelkovyPocetVelkychPiv() + " velkých piv v " + dBadapter.getCelkovyPocetZapasu() + " zápasech.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-
-    }
-
-    private void zobrazObrazovkuSeZapasy() {
-
-        sw_hracZapas.setText(R.string.zobrazeni_hracu);
-
-        //spárování spinneru a arraylistu pro zobrazení ze stringu
-
-        spinnerZapasyArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.statistiky_sezony));
-        spinnerZapasyArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_vyberHraceSezony.setAdapter(spinnerZapasyArrayAdapter);
-
-        //zobrazení list view podle polohy na spinneru
-        sp_vyberHraceSezony.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                zobrazListViewZapasuDleSpinneru(position);
-                if(!swCheck) {
-                    setSezonaPosition(position);
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //tlačítko hledat
-        btn_hledej.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                et_hledej.setHint("zadej heslo");
-                if (validace.zvalidujJmeno(et_hledej)) {
-                    Toast.makeText(getActivity(), "Buď si zadal jméno delší než 100 znaků nebo si použil zakázané znaky. Povoleny jsou pouze alfanumerické znaky, podtržítko a pomlčka", Toast.LENGTH_LONG).show();
-                } else {
-                    zobrazHledaneZapasy(dBadapter, sezonaPosition, et_hledej.getText().toString());
-                }
-            }
-        });
-
-
-        lv_seznam.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                final Zapas oznacenyZapas = (Zapas) parent.getItemAtPosition(position);
-                setIdHrace(oznacenyZapas.getId());
-
-                //definování dialogového okna pro zobrazení statistik
-                final AlertDialog.Builder zapasDialog = new AlertDialog.Builder(getActivity());
-
-                //definování tlačítek a layoutu v dialogu pro zobrazení statistik
-                View zapasView = getLayoutInflater().inflate(R.layout.dialog_vyber_statistiky, null);
-                btn_celkove = (Button) zapasView.findViewById(R.id.btn_celkove);
-                btn_zrusit = (Button) zapasView.findViewById(R.id.btn_zrusit);
-                lv_seznamVyber = (ListView) zapasView.findViewById(R.id.lv_seznamVyber);
-                sp_podrobnyVyber = (Spinner) zapasView.findViewById(R.id.sp_podrobnyVyber);
-                tv_nadpis = (TextView) zapasView.findViewById(R.id.tv_nadpis);
-
-                tv_nadpis.setText("Statistiky se soupeřem " + oznacenyZapas.getSouper());
-
-                zapasDialog.setView(zapasView);
-                final AlertDialog dialog = zapasDialog.create();
-                dialog.show();
-
-                btn_zrusit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-
-                //spárování spinneru u prvního dialogu a arraylistu pro zobrazení ze stringu
-                spinnerHraciDialogArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.statistiky_dialog_hraci));
-                spinnerHraciDialogArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                sp_podrobnyVyber.setAdapter(spinnerHraciDialogArrayAdapter);
-
-                //zobrazení druhého list view podle polohy na spinneru
-                sp_podrobnyVyber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                        zobrazHraceNaListViewProStatistiku(dBadapter, position);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
-
-                btn_celkove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(), "Na zápase se soupeřem " + oznacenyZapas.getSouper() + " se celkově vypilo " + dBadapter.getCelkovyPocetMalychPiv() + " malých piv a " + dBadapter.getCelkovyPocetVelkychPiv() + " velkých piv v " + dBadapter.getCelkovyPocetZapasu() + ".  lidech.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-
-    }*/
 
 
     public void setSwZobrazeniZapasu(boolean swZobrazeniZapasu) {
@@ -658,20 +314,225 @@ public class StatistikyFrag extends Fragment {
 
         return listCelkovychPiv;
     }
-
+    //metoda která zajistí zobrazení propojení backendu s frontendem/ xml s kódem
     private void zobrazCelkovySeznamDialog() {
         final AlertDialog.Builder statsDialog = new AlertDialog.Builder(getActivity());
 
         //definování tlačítek a layoutu v dialogu pro zobrazení statistik
         View statsView = getLayoutInflater().inflate(R.layout.dialog_statistiky_celkove, null);
-        lv_statsCelkem = (ListView) statsView.findViewById(R.id.lv_statsCelkem);
-        tv_statsCelkem = (TextView) statsView.findViewById(R.id.tv_statsCelkem);
+        lv_statsCelkem = statsView.findViewById(R.id.lv_statsCelkem);
+        tv_statsCelkem = statsView.findViewById(R.id.tv_statsCelkem);
+        if (swZobrazeniZapasu) {
+            tv_statsCelkem.setText(R.string.tv_statistiky_celkove_ucastnici);
+        }
+        else {
+            tv_statsCelkem.setText(R.string.tv_statistiky_celkove_sezony);
+        }
         celkemStatsArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, vratListCelkovychVypitychPiv());
         lv_statsCelkem.setAdapter(celkemStatsArrayAdapter);
 
         statsDialog.setView(statsView);
         final AlertDialog dialog = statsDialog.create();
         dialog.show();
+    }
+
+    //metoda co propojuje listview z xml s kodem pomocí vlastní metody
+    //zároveň jde zde nastaveno co se má v listview zobrazovat - zbytečné to rozdělovat na 2 metody
+    private void zobrazListView() {
+        List<Polozka> seznamProListView = new ArrayList<>();
+        //pokud je zobrazen ve switchi zápas
+        if (swZobrazeniZapasu) {
+            //hodíme stranou velikost zápasů aby se to ve for cyklu nepočítalo pořád dokola
+            int seznamZapasuSize = seznamZapasu.size();
+            Sezona sezona = Sezona.zaradSezonuDleComba(poziceSpinneru);
+            //projíždíme for cyklem všechny zápasy
+            for (int i = 0; i < seznamZapasuSize; i++) {
+                //pokud je spinner na pozici všechny zápasy či na pozici sezony které odpovídá zápas v databázi tak to přidáme do listview
+                if (sezona == Sezona.Vse || sezona == seznamZapasu.get(i).getSezona()) {
+                    seznamZapasu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Zakladni);
+                    seznamProListView.add(seznamZapasu.get(i));
+                }
+            }
+        }
+        else {
+            int seznamHracuSize = seznamHracu.size();
+            HracEnum hracEnum = HracEnum.zaradHraceDleComba(poziceSpinneru);
+            for (int i = 0; i < seznamHracuSize; i++) {
+                if (hracEnum == HracEnum.Vse || hracEnum.isFanousek() == seznamHracu.get(i).isFanousek()) {
+                    seznamHracu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Zakladni);
+                    seznamProListView.add(seznamHracu.get(i));
+                }
+            }
+        }
+
+        listViewArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, seznamProListView);
+        lv_seznam.setAdapter(listViewArrayAdapter);
+    }
+    // nastavuje dialog pro kliknutí na položku v hlavním listview
+    private void nastavKlikNaListview() {
+        lv_seznam.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                oznacenaPolozka = (Polozka) parent.getItemAtPosition(position);
+
+                Log.d(TAG, "zobrazuji dialog pro " + oznacenaPolozka);
+                //definování dialogového okna pro zobrazení statistik
+                AlertDialog.Builder lvDialog = new AlertDialog.Builder(getActivity());
+
+                //definování tlačítek a layoutu v dialogu pro zobrazení statistik
+                View lvView = getLayoutInflater().inflate(R.layout.dialog_vyber_statistiky, null);
+                btn_seradit = lvView.findViewById(R.id.btn_seradit);
+                btn_ok = lvView.findViewById(R.id.btn_ok);
+                lv_seznamVyber =  lvView.findViewById(R.id.lv_seznamVyber);
+                sp_podrobnyVyber = lvView.findViewById(R.id.sp_podrobnyVyber);
+                tv_nadpis = lvView.findViewById(R.id.tv_nadpis);
+
+                //nastavení nadpisu dialogu. Rozdílné podle polohy switche
+                if (oznacenaPolozka instanceof Zapas) {
+                    tv_nadpis.setText("Statistiky se soupeřem " + ((Zapas) oznacenaPolozka).getSouper());
+                }
+                else if (oznacenaPolozka instanceof Hrac){
+                    tv_nadpis.setText("Statistiky pro hráče " + ((Hrac) oznacenaPolozka).getJmeno());
+                }
+                lvDialog.setView(lvView);
+                final AlertDialog dialog = lvDialog.create();
+                dialog.show();
+
+                btn_ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                //spárování spinneru u dialogu a arraylistu pro zobrazení ze stringu. Je rozdílný podle polohy switche
+                if (!swZobrazeniZapasu) {
+                    spinnerDialogArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.sezony));
+                }
+                else {
+                    spinnerDialogArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.hraci));
+
+                }
+                spinnerDialogArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                sp_podrobnyVyber.setAdapter(spinnerDialogArrayAdapter);
+
+                //zobrazení druhého list view podle polohy na spinneru
+                sp_podrobnyVyber.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                        zobrazListViewDialogu(position, false);
+                        poziceSpinneruVDialogu = position;
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+                btn_seradit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        zobrazListViewDialogu(poziceSpinneruVDialogu, true);
+                    }
+                });
+
+
+            }
+        });
+    }
+
+    private void zobrazListViewDialogu (int pozice, boolean seradit) {
+        List<String> listPolozekNaListView = new ArrayList<>();
+        List<Polozka> listPolozekProZpracovani = new ArrayList<>();
+
+        int celkemMalych = 0;
+        int celkemVelkych = 0;
+        //pokud je zobrazen ve switchi zápas
+        if (swZobrazeniZapasu) {
+            //hodíme stranou velikost zápasů aby se to ve for cyklu nepočítalo pořád dokola
+            List<Hrac> seznamHracuDialog = ((Zapas) oznacenaPolozka).getSeznamHracu();
+            int seznamHracuSize = seznamHracuDialog.size();
+            HracEnum hracEnum = HracEnum.zaradHraceDleComba(pozice);
+            //projíždíme for cyklem všechny zápasy
+            for (int i = 0; i < seznamHracuSize; i++) {
+                //pokud je spinner na pozici všechny zápasy či na pozici sezony které odpovídá zápas v databázi tak to přidáme do listview
+                if (hracEnum == HracEnum.Vse || hracEnum.isFanousek() == seznamHracuDialog.get(i).isFanousek()) {
+                    //napočítáváme počet piv do celkem koše
+                    celkemVelkych += seznamHracuDialog.get(i).getPocetPiv().getPocetVelkych();
+                    celkemMalych += seznamHracuDialog.get(i).getPocetPiv().getPocetMalych();
+                    seznamHracuDialog.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
+                    listPolozekProZpracovani.add(seznamHracuDialog.get(i));
+                }
+            }
+
+            //pokud je počet piv větší než nula přidáme položku celkem jako první do listu na zobrazení v listview
+            if (celkemVelkych > 0 || celkemMalych > 0) {
+                listPolozekNaListView.add(0,"");
+                listPolozekNaListView.add(0, "Celkem se v zápase vypilo " + celkemVelkych + " velkých a " + celkemMalych + " malých piv");
+                //pokud se zavolá metoda s parametrem seřazení, tak se nejdřív seznam hráčů seřadí podle počtu vypitejch pivek
+                if (seradit) {
+                    listPolozekProZpracovani.sort(new SeradPodlePiv());
+                }
+            }
+            //pokud není žádné pivo vypité tak se vrátí vyhubování
+            else {
+                listPolozekNaListView.add(0,"Zobrazuji seznam hanby:");
+                listPolozekNaListView.add(0,"V tomto zápase se žádné pivo nevypilo!!??");
+                if (seradit) {
+                    Toast.makeText(getActivity(), "Co chceš řadit? Nikdo žádný pivo nevypil vole!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        else {
+
+            Hrac oznacenyHrac = ((Hrac) oznacenaPolozka);
+            int seznamZapasuSize = seznamZapasu.size();
+            Sezona sezona = Sezona.zaradSezonuDleComba(pozice);
+            //projedeme loopem seznam zápasů
+            for (int i = 0; i < seznamZapasuSize; i++) {
+                //zápas zpracujeme pouze pokud je spinner nastaven na zobrazit vše či na vybranou sezonu
+                Log.d(TAG, "projíždím zápas ze seznamu zápasů " + seznamZapasu.get(i) + " který má seznam hráčů " + seznamZapasu.get(i).getSeznamHracu());
+                if (sezona == Sezona.Vse || sezona == seznamZapasu.get(i).getSezona()) {
+                    int seznamHracuSize = seznamZapasu.get(i).getSeznamHracu().size();
+                    //zde projíždíme loopem v konkrétním zápase seznam hráčů
+                    for (int j = 0; j < seznamHracuSize; j++) {
+                        Log.d(TAG, "projíždím zápas ze seznamu zápasů " + seznamZapasu.get(i) + " a hráče ze seznamu hráčů " + seznamZapasu.get(i).getSeznamHracu().get(j));
+                        //porovnáváme podle timestampu(id) jestli souhlasí hráč s označeneným hráčem. Pokud je nalezen, breaknem to, víc nepotřebujem
+                        if (oznacenyHrac.getTimestamp() == seznamZapasu.get(i).getSeznamHracu().get(j).getTimestamp()) {
+                            //voláme metodu která určí zobrazování zápasu jenom s pivama tohoto hráče
+                            seznamZapasu.get(i).nastavPivniZobrazeniProJednohoHrace(seznamZapasu.get(i).getSeznamHracu().get(j));
+                            listPolozekProZpracovani.add(seznamZapasu.get(i));
+                            celkemVelkych += seznamZapasu.get(i).getSeznamHracu().get(j).getPocetPiv().getPocetVelkych();
+                            celkemMalych += seznamZapasu.get(i).getSeznamHracu().get(j).getPocetPiv().getPocetMalych();
+                            break;
+                        }
+                    }
+                }
+            }
+            if (celkemVelkych > 0 || celkemMalych > 0) {
+                listPolozekNaListView.add(0,"");
+                listPolozekNaListView.add(0, "Celkem hráč vypil " + celkemVelkych + " velkých a " + celkemMalych + " malých piv");
+                if (seradit) {
+                    listPolozekProZpracovani.sort(new SeradPodlePiv());
+                }
+            }
+            else {
+                listPolozekNaListView.add(0,"");
+                listPolozekNaListView.add(0,"Tento hráč zatím žádné pivo nevypil!!??");
+                if (seradit) {
+                    Toast.makeText(getActivity(), "Co chceš řadit? Nikdo žádný pivo nevypil vole!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        //Na položky se zavolá ve for loopu metoda to string a přidá se do listu stringů. Je to tu jenom kvůli tomu řazení, jinak by to moh bejt rovnou lis stringů
+        for (Polozka polozka : listPolozekProZpracovani) {
+            listPolozekNaListView.add(polozka.toString());
+        }
+        detailListViewAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, listPolozekNaListView);
+        lv_seznamVyber.setAdapter(detailListViewAdapter);
     }
 
 }

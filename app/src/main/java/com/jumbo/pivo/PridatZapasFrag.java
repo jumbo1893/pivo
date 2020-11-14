@@ -17,12 +17,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -107,7 +104,7 @@ public class PridatZapasFrag extends Fragment {
                 seznamHracu.clear();
                 for(QueryDocumentSnapshot documentSnapshot : value) {
                     Hrac hrac = documentSnapshot.toObject(Hrac.class);
-                    hrac.setZobrazeniHrace(ZobrazeniHrace.Zakladni);
+                    hrac.setZobrazeniPolozky(ZobrazeniPolozky.Zakladni);
                     seznamHracu.add(hrac);
                     Log.d(TAG, "Automaticky načten seznam hráčů po změně " + seznamHracu);
                 }
@@ -454,7 +451,7 @@ public class PridatZapasFrag extends Fragment {
         View vyberHraceView = getLayoutInflater().inflate(R.layout.dialog_vyber_hrace, null);
         lv_vyberHrace = (ListView) vyberHraceView.findViewById(R.id.lv_vyberHrace);
         btn_vybratHrace = (Button) vyberHraceView.findViewById(R.id.btn_vybratHrace);
-        btn_zrusit = (Button) vyberHraceView.findViewById(R.id.btn_zrusit);
+        btn_zrusit = (Button) vyberHraceView.findViewById(R.id.btn_ok);
         lv_vyberHrace.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         vyberHraceArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, seznamHracu);
         lv_vyberHrace.setAdapter(vyberHraceArrayAdapter);
@@ -522,7 +519,7 @@ public class PridatZapasFrag extends Fragment {
         View vyberHraceView = getLayoutInflater().inflate(R.layout.dialog_vyber_hrace, null);
         lv_vyberHrace = (ListView) vyberHraceView.findViewById(R.id.lv_vyberHrace);
         btn_vybratHrace = (Button) vyberHraceView.findViewById(R.id.btn_vybratHrace);
-        btn_zrusit = (Button) vyberHraceView.findViewById(R.id.btn_zrusit);
+        btn_zrusit = (Button) vyberHraceView.findViewById(R.id.btn_ok);
         lv_vyberHrace.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         //probiha kontrola, zda seznam hracu u daneho zapasu nema jiz smazaneho hrace
         List<Hrac> novySeznam = new ArrayList<>();

@@ -1,14 +1,15 @@
 package com.jumbo.pivo;
 
 
-public enum ZobrazeniHrace {
+public enum ZobrazeniPolozky {
     Detailni("Detailní"),
     Zakladni("Základní"),
-    Pivni("Pivní");
+    Pivni("Pivní"),
+    PivniProJednohoHrace("Pivní pro hráče");
 
     private String text;
 
-    ZobrazeniHrace(String text) {
+    ZobrazeniPolozky(String text) {
         this.text = text;
     }
 

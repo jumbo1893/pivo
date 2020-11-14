@@ -4,21 +4,22 @@ import android.util.Log;
 
 public enum HracEnum {
 
-    Vse("Zobrazit vše", "hráči a fanoušci"),
-    Hrac("Hráč", "hráči"),
-    Fanousek("Fanoušek", "fanoušci");
+    Vse("Zobrazit vše", "hráči a fanoušci", false),
+    Hrac("Hráč", "hráči", false),
+    Fanousek("Fanoušek", "fanoušci", true);
 
 
     private String text;
     private String mnozneCisloTextu;
+    private boolean fanousek;
 
     private static final String TAG = HracEnum.class.toString();
 
 
-    HracEnum(String text, String mnozneCisloTextu) {
+    HracEnum(String text, String mnozneCisloTextu, boolean fanousek) {
         this.text = text;
         this.mnozneCisloTextu = mnozneCisloTextu;
-
+        this.fanousek = fanousek;
 
     }
 
@@ -42,5 +43,9 @@ public enum HracEnum {
 
     public String getMnozneCisloTextu() {
         return mnozneCisloTextu;
+    }
+
+    public boolean isFanousek() {
+        return fanousek;
     }
 }

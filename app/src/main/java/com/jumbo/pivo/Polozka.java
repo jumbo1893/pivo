@@ -5,9 +5,11 @@ import androidx.annotation.Nullable;
 public abstract class Polozka {
 
     private long timestamp;
+    protected ZobrazeniPolozky zobrazeniPolozky;
 
     public Polozka() {
         this.timestamp = System.currentTimeMillis();
+        this.zobrazeniPolozky = ZobrazeniPolozky.Zakladni;
     }
 
     public long getTimestamp() {
@@ -16,6 +18,14 @@ public abstract class Polozka {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public ZobrazeniPolozky getZobrazeniPolozky() {
+        return zobrazeniPolozky;
+    }
+
+    public void setZobrazeniPolozky(ZobrazeniPolozky zobrazeniPolozky) {
+        this.zobrazeniPolozky = zobrazeniPolozky;
     }
 
     @Override

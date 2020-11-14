@@ -7,24 +7,24 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/btn_celkove"
+        android:id="@+id/btn_seradit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/celkove"
+        android:text="@string/seradit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_zrusit"
+        app:layout_constraintEnd_toStartOf="@+id/btn_ok"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_nadpis" />
 
     <Button
-        android:id="@+id/btn_zrusit"
+        android:id="@+id/btn_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/zrusit"
+        android:text="@string/ok"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_celkove"
+        app:layout_constraintStart_toEndOf="@+id/btn_seradit"
         app:layout_constraintTop_toBottomOf="@+id/tv_nadpis" />
 
     <ListView
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_celkove" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_seradit" />
 
     <TextView
         android:id="@+id/tv_nadpis"

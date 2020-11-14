@@ -16,7 +16,8 @@ public class Zapas extends Polozka {
     private Sezona sezona;
     private int pocetVelkychPiv;
     private int pocetMalychPiv;
-    private int zobrazeniProVyber;
+    private Hrac oznacenyHrac;
+
     //sezona 4 = ostatní, 1 = jaro 2020, 2 = podzim 2020, 3 = jaro 2021
 
 
@@ -38,7 +39,7 @@ public class Zapas extends Polozka {
     }
 
     //konstruktor i s pivama
-    public Zapas (String souper, String datum, boolean domaciZapas, int pocetVelkychPiv, int pocetMalychPiv, int zobrazeniProVyber) {
+    public Zapas (String souper, String datum, boolean domaciZapas, int pocetVelkychPiv, int pocetMalychPiv) {
 
         this.souper = souper;
         this.datum = datum;
@@ -46,7 +47,6 @@ public class Zapas extends Polozka {
         zaradSezonu(datum);
         this.pocetVelkychPiv = pocetVelkychPiv;
         this.pocetMalychPiv = pocetMalychPiv;
-        this.zobrazeniProVyber = zobrazeniProVyber;
         seznamHracu = new ArrayList<>();
     }
 
@@ -83,11 +83,20 @@ public class Zapas extends Polozka {
     @Override
     public String toString() {
 
-        if (zobrazeniProVyber == 1) {
+        if (zobrazeniPolozky == ZobrazeniPolozky.Pivni) {
             if (domaciZapas) {
-                return "Liščí Trus - " + souper + ", hráno: " + Datum.zmenDatumDoFront(datum) + " počet velkých piv: " + pocetVelkychPiv + ", malých piv:  " + pocetMalychPiv;
+                return "Liščí Trus - " + souper + ", hráno: " + Datum.zmenDatumDoFront(datum) + " počet velkých piv: " + getCelkovyPocetVelkychPiv() + ", malých piv:  " + getCelkovyPocetMalychPiv();
             } else {
-                return souper + " - Liščí Trus, hráno: " + Datum.zmenDatumDoFront(datum) + " počet velkých piv: " + pocetVelkychPiv + ", malých piv:  " + pocetMalychPiv;
+                return souper + " - Liščí Trus, hráno: " + Datum.zmenDatumDoFront(datum) + " počet velkých piv: " + getCelkovyPocetVelkychPiv() + ", malých piv:  " + getCelkovyPocetMalychPiv();
+            }
+
+        }
+
+        else if (zobrazeniPolozky == ZobrazeniPolozky.PivniProJednohoHrace) {
+            if (domaciZapas) {
+                return "Liščí Trus - " + souper + ", hráno: " + Datum.zmenDatumDoFront(datum) + " počet velkých piv: " + oznacenyHrac.getPocetPiv().getPocetVelkych() + ", malých piv:  " + oznacenyHrac.getPocetPiv().getPocetMalych();
+            } else {
+                return souper + " - Liščí Trus, hráno: " + Datum.zmenDatumDoFront(datum) + " počet velkých piv: " + oznacenyHrac.getPocetPiv().getPocetVelkych() + ", malých piv:  " + oznacenyHrac.getPocetPiv().getPocetMalych();
             }
 
         }
@@ -166,14 +175,6 @@ public class Zapas extends Polozka {
         this.pocetMalychPiv = pocetMalychPiv;
     }
 
-    public int getZobrazeniProVyber() {
-        return zobrazeniProVyber;
-    }
-
-    public void setZobrazeniProVyber(int zobrazeniProVyber) {
-        this.zobrazeniProVyber = zobrazeniProVyber;
-    }
-
     public List<Hrac> getSeznamHracu() {
         return seznamHracu;
     }
@@ -240,6 +241,14 @@ public class Zapas extends Polozka {
         }
         Log.d(TAG, "Z celkového počtu " + seznamHracu.size() + " hráčů vracím " + pocetPiv + " malých počet piv. Účastníkem je fanoušek " + fanousek);
         return pocetPiv;
+    }
+
+    /**
+     * @param hrac hrac musí mít v proměnných nějaká piva aby se daly zobrazit. To znamená parametr by měl být např. ze seznamu hráčů zápasu
+     */
+    public void nastavPivniZobrazeniProJednohoHrace(Hrac hrac) {
+       setZobrazeniPolozky(ZobrazeniPolozky.PivniProJednohoHrace);
+       this.oznacenyHrac = hrac;
     }
 
 

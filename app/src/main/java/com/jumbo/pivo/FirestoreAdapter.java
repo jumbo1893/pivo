@@ -8,7 +8,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -20,7 +19,8 @@ public class FirestoreAdapter {
 
     private FirebaseFirestore db;
 
-    List<Hrac> seznamHracu;
+    private List<Hrac> seznamHracu;
+    private List<Zapas> seznamZapasu;
 
     private static final String TAG = FirestoreAdapter.class.toString();
 
@@ -81,7 +81,7 @@ public class FirestoreAdapter {
                 });
     }
 
-    public List<Hrac> vratSeznamHracu(final ZobrazeniHrace zobrazeniHrace) {
+    public List<Hrac> vratSeznamHracu(final ZobrazeniPolozky zobrazeniPolozky) {
         Log.d(TAG, "vracím seznam hráčů");
         db.collection("hrac")
                 .get()
@@ -92,7 +92,7 @@ public class FirestoreAdapter {
                             seznamHracu = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Hrac hrac = document.toObject(Hrac.class);
-                                hrac.setZobrazeniHrace(zobrazeniHrace);
+                                hrac.setZobrazeniPolozky(zobrazeniPolozky);
                                 seznamHracu.add(hrac);
                             }
                             Log.d(TAG, "vracím seznam hráčů: " + seznamHracu);
@@ -102,5 +102,27 @@ public class FirestoreAdapter {
                     }
                 });
         return seznamHracu;
+    }
+
+    public List<Zapas> vratSeznamZapasu() {
+        Log.d(TAG, "vracím seznam zápasů");
+        db.collection("zapas")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            seznamZapasu = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Zapas zapas = document.toObject(Zapas.class);
+                                seznamZapasu.add(zapas);
+                            }
+                            Log.d(TAG, "vracím seznam zápasů: " + seznamZapasu);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        return seznamZapasu;
     }
 }

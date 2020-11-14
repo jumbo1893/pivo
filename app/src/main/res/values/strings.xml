@@ -43,8 +43,10 @@
     <string name="zobrazeni_zapasu">Přepni pro zobrazení zápasů</string>
     <string name="zobrazeni_hracu">Přepni pro zobrazení hráčů</string>
     <string name="celkove">celkově</string>
+    <string name="seradit">seřadit podle výkonu</string>
     <string name="zobraz_celkove">zobraz celkove statistiky</string>
-    <string name="tv_statistiky_celkove">Celkové statistiky dle sezony</string>
+    <string name="tv_statistiky_celkove_sezony">Celkové statistiky dle sezony</string>
+    <string name="tv_statistiky_celkove_ucastnici">Celkové statistiky dle hráčů/fanoušků</string>
     <string name="info_app">Informace o aplikaci</string>
     <string name="info_app1">Aplikace slouží k počítání počtu piv vypitých na zápasech Liščího Trusu.
         \n\nVeškeré zapsané údaje jsou zapisovány do lokální databáze a budou k dispozici i po vypnutí aplikace/telefonu.
