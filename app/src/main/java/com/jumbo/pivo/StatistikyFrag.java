@@ -404,7 +404,6 @@ public class StatistikyFrag extends Fragment {
                 //vyfiltrujem dle podmínek
                 if (hracEnum == HracEnum.Vse || hracEnum.isFanousek() == seznamHracu.get(i).isFanousek()) {
                     //voláme metodu pro zjištění celkového počtu piv
-                    seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
                     seznamHracu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
                     seznamProListView.add(seznamHracu.get(i));
                 }
@@ -449,7 +448,6 @@ public class StatistikyFrag extends Fragment {
                     //vyfiltrujem dle podmínek
                     if ((hracEnum == HracEnum.Vse || hracEnum.isFanousek() == seznamHracu.get(i).isFanousek()) && seznamHracu.get(i).toString().toLowerCase().contains(filtr.toLowerCase().trim())) {
                         //voláme metodu pro zjištění celkového počtu piv
-                        seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
                         seznamHracu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
                         seznamProListView.add(seznamHracu.get(i));
                     }

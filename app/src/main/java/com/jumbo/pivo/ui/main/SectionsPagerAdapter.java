@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 //import com.jumbo.pivo.MenuFrag;
+import com.jumbo.pivo.MenuFrag;
 import com.jumbo.pivo.PridatHraceFrag;
 import com.jumbo.pivo.PridatPivoFrag;
 import com.jumbo.pivo.PridatZapasFrag;
@@ -36,7 +37,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new PridatHraceFrag();
+                fragment = new MenuFrag();
                 break;
             case 1:
                 fragment = new PridatHraceFrag();

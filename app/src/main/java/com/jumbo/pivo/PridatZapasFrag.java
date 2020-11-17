@@ -48,6 +48,7 @@ public class PridatZapasFrag extends Fragment {
     private ArrayAdapter vyberHraceArrayAdapter;
     private ValidacePoli validace = new ValidacePoli();
     private Zapas oznacenyZapas;
+    //nutné pomocné proměnné pro seznam hráčů
     private List<Hrac> seznamHracu = new ArrayList<>();
     private List<Hrac> oznaceniHraciList;
     private List<Hrac> oznaceniHraciProNovyZapas = new ArrayList<>();
@@ -135,9 +136,7 @@ public class PridatZapasFrag extends Fragment {
         sezonyArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_sezony.setAdapter(sezonyArrayAdapter);
 
-        //instance db adaptéru pro načtení contextu z této stránky
-
-
+        //spinner sezon
         sp_sezony.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -170,9 +169,7 @@ public class PridatZapasFrag extends Fragment {
                 pridatZapas();
             }
         });
-
-
-
+        //nastavení základního listView
         lv_seznamZapasu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -219,20 +216,16 @@ public class PridatZapasFrag extends Fragment {
                         else {
                             oznacenyZapas.zaradSezonu(et_upravDatumZapasu.getText().toString());
                         }
-
                     }
-
                     @Override
                     public void onNothingSelected(AdapterView<?> parentView) {
-                        // your code here
+                        //nemělo by nikdy nastat
                     }
-
                 });
-
+                //kliknuti na upravu seznamu hracu v zápase
                 btn_upravitVybraneHrace.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "Kliknuto na upravit vybrane hrace ");
                         nastavVybraniHraceDialogUprava();
                     }
                 });
@@ -311,8 +304,7 @@ public class PridatZapasFrag extends Fragment {
 
         return view;
     }
-
-
+    //podle vybrané pozice spinneru se zobrazuje zápas. Hodnota spinneru se bere z globální proměnný
     private void zobrazListViewDleSpinneru(List<Zapas> seznamZapasu) {
         if (zobrazenaSezona == 0) {
             zapasArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, seznamZapasu);
@@ -333,15 +325,13 @@ public class PridatZapasFrag extends Fragment {
         lv_seznamZapasu.setAdapter(zapasArrayAdapter);
 
     }
-
+    //nastavení kalendáře
     private void zobrazKalendar (final EditText editText) {
 
         c = Calendar.getInstance();
         int day = c.get(Calendar.DATE);
         int month = c.get(Calendar.MONTH);
         int year = c.get(Calendar.YEAR);
-
-
 
         datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -358,7 +348,7 @@ public class PridatZapasFrag extends Fragment {
     private void setZobrazenaSezona(int zobrazenaSezona) {
         this.zobrazenaSezona = zobrazenaSezona;
     }
-
+    //metoda pro validaci
     private boolean zvalidujJmenoZapasu (EditText et_jmeno) {
         Log.d(TAG, "Validuje se jméno zápasu " + et_jmeno.getText().toString());
         if (validace.zvalidujPrazdnePole(et_jmeno)) {
@@ -376,7 +366,7 @@ public class PridatZapasFrag extends Fragment {
             return false;
         }
     }
-
+    //metoda pro validaci
     private boolean zvalidujDatumZapasu (EditText et_datum) {
         Log.d(TAG, "Validuje se datum zápasu " + et_datum.getText().toString());
         if (validace.zvalidujPrazdnePole(et_datum)) {
@@ -394,7 +384,7 @@ public class PridatZapasFrag extends Fragment {
             return false;
         }
     }
-
+    //metoda pro přidání zápasu
     private void pridatZapas() {
         Log.d(TAG, "Probíhá přidání zápasu");
         if (zvalidujJmenoZapasu(et_jmenoSoupere) || zvalidujDatumZapasu(et_datumZapasu)) {
@@ -405,13 +395,19 @@ public class PridatZapasFrag extends Fragment {
             Toast.makeText(getActivity(), "zadej aspoň jednoho hráče co si šel čutnout", Toast.LENGTH_LONG).show();
         }
         else {
+            //pokud validace prošla bez chyb
             Zapas zapas;
             try {
-                //Propojení tlačítek s proměnnými v této třídě.
+                //nulujeme hráčům počet piv. Hráči se berou z DB, kde již mají vepsaný celkový počet piv a do jednotlivejch zápasů by měli vstupovat s nulou
+                for (int i = 0; i < oznaceniHraciProNovyZapas.size(); i++) {
+                    oznaceniHraciProNovyZapas.get(i).getPocetPiv().vynulujPocetPiv();
+                }
                 zapas = new Zapas(et_jmenoSoupere.getText().toString(), Datum.zmenDatumDoSQL(et_datumZapasu.getText().toString()), sw_domaci.isChecked(), oznaceniHraciProNovyZapas);
                 Toast.makeText(getActivity(), zapas.toString(), Toast.LENGTH_LONG).show();
+                //zde přidáváme do DB a může se to posrat
                 firestoreAdapter.pridatDoDatabaze(zapas);
                 Log.d(TAG, "Pridavan zapas " + zapas + oznaceniHraciProNovyZapas );
+                //mažeme seznam hráčů aby se dal použít i příště
                 oznaceniHraciProNovyZapas.clear();
             } catch (Exception e) {
                 Toast.makeText(getActivity(), "Něco se posralo při zadávání, napiš to pořádně", Toast.LENGTH_LONG).show();
@@ -419,7 +415,7 @@ public class PridatZapasFrag extends Fragment {
 
         }
     }
-
+    //metoda pro úpravu zápasu
     private void upravZapas (AlertDialog dialog) {
         Log.d(TAG, "Probíhá úprava zápasu");
         if (zvalidujJmenoZapasu(et_upravJmenoSoupere) || zvalidujDatumZapasu(et_upravDatumZapasu)) {
@@ -431,7 +427,7 @@ public class PridatZapasFrag extends Fragment {
                 oznacenyZapas.setDatum(Datum.zmenDatumDoSQL(et_upravDatumZapasu.getText().toString()));
                 oznacenyZapas.setDomaciZapas(sw_upravaDomaciZapas.isChecked());
                 oznacenyZapas.setSeznamHracu(oznaceniHraciProUpravuZapasu);
-
+                //upravujeme v DB
                 firestoreAdapter.pridatDoDatabaze(oznacenyZapas);
                 dialog.dismiss();
                 Toast.makeText(getActivity(), "Upraven zápas " + oznacenyZapas.toString(), Toast.LENGTH_SHORT).show();
@@ -442,19 +438,21 @@ public class PridatZapasFrag extends Fragment {
             }
         }
     }
-
+    //nastavení dialogu pro NOVÝ zápas
     private void nastavVybraniHraceDialog() {
         Log.d(TAG, "Kliknuto na zobrazení list view se seznamem hráčů který hrajou zápas " + seznamHracu);
+        //duplikujem seznam pro porovnání
         oznaceniHraciList = oznaceniHraciProNovyZapas;
         final AlertDialog.Builder vyberHraceDialog = new AlertDialog.Builder(getActivity());
 
         View vyberHraceView = getLayoutInflater().inflate(R.layout.dialog_vyber_hrace, null);
-        lv_vyberHrace = (ListView) vyberHraceView.findViewById(R.id.lv_vyberHrace);
-        btn_vybratHrace = (Button) vyberHraceView.findViewById(R.id.btn_vybratHrace);
-        btn_zrusit = (Button) vyberHraceView.findViewById(R.id.btn_ok);
+        lv_vyberHrace = vyberHraceView.findViewById(R.id.lv_vyberHrace);
+        btn_vybratHrace = vyberHraceView.findViewById(R.id.btn_vybratHrace);
+        btn_zrusit = vyberHraceView.findViewById(R.id.btn_ok);
         lv_vyberHrace.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         vyberHraceArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, seznamHracu);
         lv_vyberHrace.setAdapter(vyberHraceArrayAdapter);
+        //pokud je nějaký hráč zaškrtnut tak ho tak rovnou zobrazíme. Použijeme v případě že uživatel již nějaké hráče zaškrtne, pak změní třeba datum zápasu a ještě se k tomu vrátí
         for (int i = 0; i < seznamHracu.size(); i++) {
             if (oznaceniHraciList.contains(seznamHracu.get(i))) {
                 lv_vyberHrace.setItemChecked(i, true);
@@ -466,6 +464,7 @@ public class PridatZapasFrag extends Fragment {
         vyberHraceDialog.setView(vyberHraceView);
         final AlertDialog vyberHrace = vyberHraceDialog.create();
         vyberHrace.show();
+        //pokud klikneme na zaškrtutého tak ho odškrtnem a naopak
         lv_vyberHrace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -479,6 +478,7 @@ public class PridatZapasFrag extends Fragment {
                 }
             }
         });
+        //tlačítkem potvrzujeme hráče. Ještě se neukládají do DB, to až stiskem nového zápasu!!
         btn_vybratHrace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -487,6 +487,7 @@ public class PridatZapasFrag extends Fragment {
                 vyberHrace.dismiss();
             }
         });
+        //rušíme výběr. Zaškrtutí hráči nebudou příště zobrazovaný
         btn_zrusit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -495,31 +496,18 @@ public class PridatZapasFrag extends Fragment {
             }
         });
     }
+    //metoda pro vybrání hráčů v úpravě zápasu
     private void nastavVybraniHraceDialogUprava() {
         boolean obohaceniHrace = false;
         Log.d(TAG, "Kliknuto na zobrazení list view se seznamem hráčů který sou k dispozici " + seznamHracu);
-/*        //prepiseme metodu contains aby se dalo vyhledavat v arraylistu pomoci timestampu
-        oznaceniHraciList = new ArrayList<Hrac>() {
-            @Override
-            public boolean contains(@Nullable Object o) {
-                for (int i = 0;i < size(); i++) {
-                    if (o instanceof Hrac) {
-                        if (o.equals(i)) {
-                            return true;
-                        }
-                    }
-                }
-
-                return super.contains(o);
-            }
-        };*/
+        //berem seznam hráčů rovnou ze zápasu
         oznaceniHraciList = oznacenyZapas.getSeznamHracu();
         final AlertDialog.Builder vyberHraceDialog = new AlertDialog.Builder(getActivity());
 
         View vyberHraceView = getLayoutInflater().inflate(R.layout.dialog_vyber_hrace, null);
-        lv_vyberHrace = (ListView) vyberHraceView.findViewById(R.id.lv_vyberHrace);
-        btn_vybratHrace = (Button) vyberHraceView.findViewById(R.id.btn_vybratHrace);
-        btn_zrusit = (Button) vyberHraceView.findViewById(R.id.btn_ok);
+        lv_vyberHrace = vyberHraceView.findViewById(R.id.lv_vyberHrace);
+        btn_vybratHrace = vyberHraceView.findViewById(R.id.btn_vybratHrace);
+        btn_zrusit = vyberHraceView.findViewById(R.id.btn_ok);
         lv_vyberHrace.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         //probiha kontrola, zda seznam hracu u daneho zapasu nema jiz smazaneho hrace
         List<Hrac> novySeznam = new ArrayList<>();
@@ -530,39 +518,48 @@ public class PridatZapasFrag extends Fragment {
                 novySeznam.addAll(seznamHracu);
                 novySeznam.add(oznaceniHraciList.get(j));
                 vyberHraceArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, novySeznam);
+                //proměnná ci značí že na seznamu je hráč co tam nemá co dělat a musíme použít obohacený seznam
                 obohaceniHrace = true;
 
             }
         }
         lv_vyberHrace.setAdapter(vyberHraceArrayAdapter);
-        if (!obohaceniHrace) { //pokud se nenasel zadny hrac navic oproti klasickemu seznamu, tak nacteme jednoduse seznam hracu
-            Log.d(TAG, "seznam hráčů z db odpovídá seznamu hráčů pro tento mač. Začínám zaškrtávat hráče...");
-            vyberHraceArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, seznamHracu);
-            for (int i = 0; i < seznamHracu.size(); i++) {
+        if (obohaceniHrace) { // používáme obohacený seznam
+            Log.d(TAG, "Začínám zaškrtávat hráče na obohaceném seznamu...");
+            for (int i = 0; i < novySeznam.size(); i++) {
                 for (int j = 0; j < oznaceniHraciList.size(); j++) {
-
-                    if (oznaceniHraciList.get(j).equals(seznamHracu.get(i))) {
+                    //hráči co jsou již na seznamu dostanou zaškrtnutí fajkou true
+                    if (oznaceniHraciList.get(j).equals(novySeznam.get(i))) {
                         lv_vyberHrace.setItemChecked(i, true);
                         break;
+                        //co nejsou dostanou vynulovaný počet piv
                     } else {
-                        //
+                        novySeznam.get(i).getPocetPiv().vynulujPocetPiv();
                     }
                 }
             }
         }
-        else {
-            Log.d(TAG, "Začínám zaškrtávat hráče na obohaceném seznamu...");
+        else { //pokud se nenasel zadny hrac navic oproti klasickemu seznamu, tak nacteme jednoduse seznam hracu
+            Log.d(TAG, "seznam hráčů z db odpovídá seznamu hráčů pro tento mač. Začínám zaškrtávat hráče...");
+            //používáme nový seznam i zde. Je to důležité, na novém seznamu se nuluje počet piv u nezaškrtnutých hráčů
+            novySeznam.clear();
+            novySeznam.addAll(seznamHracu);
+            vyberHraceArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice, novySeznam);
+            //projíždíme
             for (int i = 0; i < novySeznam.size(); i++) {
                 for (int j = 0; j < oznaceniHraciList.size(); j++) {
 
+                    //hráči co jsou již na seznamu dostanou zaškrtnutí fajkou true
                     if (oznaceniHraciList.get(j).equals(novySeznam.get(i))) {
                         lv_vyberHrace.setItemChecked(i, true);
                         break;
+                        //co nejsou dostanou vynulovaný počet piv
                     } else {
-                        //
+                        novySeznam.get(i).getPocetPiv().vynulujPocetPiv();
                     }
                 }
             }
+
         }
         vyberHraceDialog.setView(vyberHraceView);
         final AlertDialog vyberHrace = vyberHraceDialog.create();
@@ -571,7 +568,7 @@ public class PridatZapasFrag extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Hrac vybranyHrac = (Hrac) parent.getItemAtPosition(position);
-
+                //nastavujeme pro zaškrtnutí
                 boolean shodaHrace = false;
                 for (int j = 0; j < oznaceniHraciList.size(); j++) {
                     if (oznaceniHraciList.get(j).equals(vybranyHrac)) {
@@ -590,14 +587,15 @@ public class PridatZapasFrag extends Fragment {
                 }
             }
         });
+        //tlačítkem potvrzujeme v úpravě. Ještě se neukládají do DB, to až stiskem nového zápasu!!
         btn_vybratHrace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 oznaceniHraciProUpravuZapasu = oznaceniHraciList;
-                Log.d(TAG, "oznacuji hrace " + oznaceniHraciProUpravuZapasu + " pro pridani do zápasu " + oznacenyZapas);
                 vyberHrace.dismiss();
             }
         });
+        //rušíme výběr. Zaškrtutí hráči nebudou příště zobrazovaný
         btn_zrusit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

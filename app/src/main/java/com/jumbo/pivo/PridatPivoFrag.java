@@ -80,6 +80,13 @@ public class PridatPivoFrag extends Fragment{
                 }
                 Log.d(TAG, "Automaticky načten seznam zápasů po změně " + seznamZapasu);
                 zobrazListViewDleSpinneru(seznamZapasu);
+                if (oznacenyHrac != null) {
+                    Log.d(TAG, "Označený hráč " + oznacenyHrac + " není null, volám metodu na aktualizování počtu piv");
+                    aktualizujPocetPivUHrace(oznacenyHrac);
+                }
+                else {
+                    Log.d(TAG, "Označený hráč je null, metoda na aktualizaci nebude volána");
+                }
             }
 
         });
@@ -263,8 +270,8 @@ public class PridatPivoFrag extends Fragment{
                                 }
                                 else
                                 {
-                                    try {
 
+                                    try {
                                         firestoreAdapter.pridatDoDatabaze(oznacenyZapas);
                                         Toast.makeText(getActivity(), oznacenyHrac.getJmeno() + " v zápase " + oznacenyZapas + " vypil " + oznacenyHrac.getPocetPiv(), Toast.LENGTH_SHORT).show();
                                         Log.d(TAG, oznacenyHrac.getJmeno() + " v zápase " + oznacenyZapas + " vypil " + oznacenyHrac.getPocetPiv());
@@ -274,6 +281,8 @@ public class PridatPivoFrag extends Fragment{
                                         Toast.makeText(getActivity(), "Něco se posralo při zadávání, napiš to pořádně", Toast.LENGTH_LONG).show();
                                         Log.d(TAG, "Chyba při ukládání počtu vypitejch piv");
                                     }
+
+
                                 }
                             }
                         });
@@ -332,6 +341,19 @@ public class PridatPivoFrag extends Fragment{
 
     private void setZobrazenaSezona(int zobrazenaSezona) {
         this.zobrazenaSezona = zobrazenaSezona-1;
+    }
+
+    private void aktualizujPocetPivUHrace(Hrac hrac) {
+        int seznamHracuSize = seznamHracu.size();
+        for (int i = 0; i < seznamHracuSize; i++) {
+            if (hrac.equals(seznamHracu.get(i))) {
+                if (seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu)) {
+                    Log.d(TAG, "Měním hráče " + hrac + " v db");
+                    firestoreAdapter.pridatDoDatabaze(seznamHracu.get(i));
+                    return;
+                }
+            }
+        }
     }
 
 }

@@ -59,5 +59,14 @@ public class Pivo extends Polozka {
         pocetMalych = 0;
     }
 
-
+    //přepsání metody equals, tady budem porovnávat podle počtu piv
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Pivo pivo = (Pivo) o;
+        return pocetMalych == pivo.pocetMalych &&
+                pocetVelkych == pivo.pocetVelkych;
+    }
 }

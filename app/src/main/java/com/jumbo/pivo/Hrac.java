@@ -1,6 +1,8 @@
 package com.jumbo.pivo;
 
 
+import android.util.Log;
+
 import java.util.List;
 
 public class Hrac extends Polozka {
@@ -14,6 +16,8 @@ public class Hrac extends Polozka {
     private boolean oznacenyHrac;
     private Pivo pocetPiv;
     private List<Zapas> seznamZapasu;
+
+    private static final String TAG = Hrac.class.toString();
 
     /**konstruktor
      * @param jmeno jméno hráče
@@ -48,9 +52,14 @@ public class Hrac extends Polozka {
         this.zobrazeniPolozky = zobrazeniPolozky;
     }
 
+    //privátní kontrukrot pro porovnání počtu piv
+    private Hrac (Pivo pivo) {
+        this.pocetPiv = new Pivo();
+        pocetPiv.vynulujPocetPiv();
+    }
 
     /**
-     * bezparametrický konstruktor
+     * bezparametrický konstruktor.
      */
     public Hrac() {
     }
@@ -134,6 +143,19 @@ public class Hrac extends Polozka {
     public void setDniDoNarozenin(int dniDoNarozenin) {
         this.dniDoNarozenin = dniDoNarozenin;
     }
+    //vrací true pokud proběhla změna
+    public boolean vypocitejDniDoNarozenin() {
+        Log.d(TAG, "Počítám dní do narozenin pro " + jmeno);
+        if (this.dniDoNarozenin == Datum.setDniDoNarozenin(datum)) {
+            Log.d(TAG, dniDoNarozenin + " je stejné jako " + Datum.setDniDoNarozenin(datum));
+            return false;
+        }
+        else {
+            Log.d(TAG, dniDoNarozenin + " je rozdílné proti " + Datum.setDniDoNarozenin(datum) + ". Přepočítávám");
+            this.dniDoNarozenin = Datum.setDniDoNarozenin(datum);
+            return true;
+        }
+    }
 
     public boolean isOznacenyHrac() {
         return oznacenyHrac;
@@ -173,13 +195,27 @@ public class Hrac extends Polozka {
 
     }
 
-    public void aktualizujZeZapasuPocetPiv(List<Zapas> seznamZapasu) {
+
+    //aktualizuje celkový počet piv u hráče. Pokud je změna vrací true, pokud není tak false
+    public boolean aktualizujZeZapasuPocetPiv(List<Zapas> seznamZapasu) {
         int seznamZapasuSize = seznamZapasu.size();
-        getPocetPiv().vynulujPocetPiv();
+        Hrac prubeznyHrac = new Hrac(null);
+        //getPocetPiv().vynulujPocetPiv();
         for (int i = 0; i < seznamZapasuSize; i++) {
             if (seznamZapasu.get(i).getSeznamHracu().contains(this)) {
-                pridejPiva(seznamZapasu.get(i).getSeznamHracu().get(seznamZapasu.get(i).getSeznamHracu().indexOf(this)).getPocetPiv());
+                //pridejPiva(seznamZapasu.get(i).getSeznamHracu().get(seznamZapasu.get(i).getSeznamHracu().indexOf(this)).getPocetPiv());
+                prubeznyHrac.pridejPiva(seznamZapasu.get(i).getSeznamHracu().get(seznamZapasu.get(i).getSeznamHracu().indexOf(this)).getPocetPiv());
+                Log.d(TAG, "Hráč " + this + " není null, volám metodu na aktualizování počtu piv");
             }
+        }
+        if (prubeznyHrac.getPocetPiv().equals(this.pocetPiv)) {
+            Log.d(TAG, "Hráč " + this + " má stejný počet piv, " + pocetPiv + ", jako před nápočtem, vracím false. Počet piv se nezměnil");
+            return false;
+        }
+        else {
+            Log.d(TAG, "U hráče " + this + " proběhla změna počtu piv na " + pocetPiv + ", vracím true");
+            this.setPocetPiv(prubeznyHrac.getPocetPiv());
+            return true;
         }
     }
 
