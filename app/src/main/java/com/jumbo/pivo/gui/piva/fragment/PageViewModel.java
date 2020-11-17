@@ -1,4 +1,4 @@
-package com.jumbo.pivo.ui.main;
+package com.jumbo.pivo.gui.piva.fragment;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

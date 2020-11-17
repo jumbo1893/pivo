@@ -1,4 +1,4 @@
-package com.jumbo.pivo.ui.main;
+package com.jumbo.pivo.gui.piva.fragment;
 
 import android.content.Context;
 
@@ -8,15 +8,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-//import com.jumbo.pivo.MenuFrag;
-import com.jumbo.pivo.MenuFrag;
-import com.jumbo.pivo.PridatHraceFrag;
-import com.jumbo.pivo.PridatPivoFrag;
-import com.jumbo.pivo.PridatZapasFrag;
+import com.jumbo.pivo.gui.piva.MenuFrag;
+import com.jumbo.pivo.gui.piva.PridatHraceFrag;
+import com.jumbo.pivo.gui.piva.PridatPivoFrag;
+import com.jumbo.pivo.gui.piva.PridatZapasFrag;
 import com.jumbo.pivo.R;
-import com.jumbo.pivo.StatistikyFrag;
-//import com.jumbo.pivo.StatistikyFrag;
-
+import com.jumbo.pivo.gui.piva.StatistikyFrag;
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.

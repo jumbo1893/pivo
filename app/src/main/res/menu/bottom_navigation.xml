@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_piva"
+        android:icon="@drawable/ic_pivo"
+        android:title="@string/nav_piva" />
+
+    <item
+        android:id="@+id/nav_pokuty"
+        android:icon="@drawable/ic_pokuty"
+        android:title="@string/nav_pokuty" />
+
+    <item
+        android:id="@+id/nav_nastaveni"
+        android:icon="@drawable/ic_nastaveni"
+        android:title="@string/nav_nastaveni" />
+
+</menu>

@@ -1,4 +1,4 @@
-package com.jumbo.pivo;
+package com.jumbo.pivo.gui.piva;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -25,6 +25,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.jumbo.pivo.Datum;
+import com.jumbo.pivo.FirestoreAdapter;
+import com.jumbo.pivo.Hrac;
+import com.jumbo.pivo.R;
+import com.jumbo.pivo.ValidacePoli;
+import com.jumbo.pivo.ZobrazeniPolozky;
 import com.jumbo.pivo.komparator.SeradHracePrvni;
 
 import java.util.ArrayList;

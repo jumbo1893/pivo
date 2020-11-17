@@ -1,5 +1,5 @@
 
-package com.jumbo.pivo;
+package com.jumbo.pivo.gui.piva;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -27,6 +27,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.jumbo.pivo.FirestoreAdapter;
+import com.jumbo.pivo.Hrac;
+import com.jumbo.pivo.HracEnum;
+import com.jumbo.pivo.Polozka;
+import com.jumbo.pivo.R;
+import com.jumbo.pivo.Sezona;
+import com.jumbo.pivo.Zapas;
+import com.jumbo.pivo.ZobrazeniPolozky;
 import com.jumbo.pivo.komparator.SeradHracePrvni;
 import com.jumbo.pivo.komparator.SeradPodlePiv;
 
