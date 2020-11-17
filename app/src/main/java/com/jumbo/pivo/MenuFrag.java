@@ -276,58 +276,69 @@ public class MenuFrag extends Fragment {
     //nastavuje podle náhodnýho intu zajímavost
     private void nastavZajimavost() throws Exception {
         Random random = new Random();
-        switch (random.nextInt(2)) {
+        switch (random.nextInt(16)) {
             case 0:
                 tv_random.setText("Náhodná zajímavost: \n\n" + vratHraceSNejvetsimPoctemVelkychPiv() + "\n\n ");
                 break;
             case 1:
                 tv_random.setText("Náhodná zajímavost: \n\n" + vratHraceSNejvetsimPoctemMalychPiv() + "\n\n ");
                 break;
-           /* case 2:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiMaxVelkychVZapase() + "\n\n ");
+            case 2:
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratZapasSNejvetsimPoctemVelkychPiv() + "\n\n ");
                 break;
             case 3:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiMaxMalychVZapase() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratZapasSNejvetsimPoctemMalychPiv() + "\n\n ");
                 break;
             case 4:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiMaxVelkychZaSezonu() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPocetVelkychTutoSezonu() + "\n\n ");
                 break;
             case 5:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiMaxMalýchZaSezonu() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPocetMalychTutoSezonu() + "\n\n ");
                 break;
             case 6:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.prepoctiPocetMalychNaVelke() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPorovnaniSezon() + "\n\n ");
                 break;
             case 7:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.vypocitejPrumernyPocetVypitychPiv() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPrumerPivNaHraceAFanouska()+ "\n\n ");
                 break;
             case 8:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiMinVelkychVZapase() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPrumerPivNaHrace() + "\n\n ");
                 break;
             case 9:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiNejvetsiUcastNaZapase() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPrumerPivNaFanouska() + "\n\n ");
                 break;
             case 10:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiNejmensiUcastNaZapase() + "\n\n ");
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratPrumerPivNaZapas() + "\n\n ");
                 break;
             case 11:
-                tv_random.setText("Náhodná zajímavost: \n\n" + dBadapter.najdiShoduNarozeninAZapasu() + "\n\n ");
-                break;*/
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratNejvyssiPrumerVZapase() + "\n\n ");
+                break;
+            case 12:
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratNejnizsiPrumerVZapase() + "\n\n ");
+                break;
+            case 13:
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratNejvetsiUcastVZapase() + "\n\n ");
+                break;
+            case 14:
+                tv_random.setText("Náhodná zajímavost: \n\n" + vratNejnizsiUcastVZapase() + "\n\n ");
+                break;
+            case 15:
+                tv_random.setText("Náhodná zajímavost: \n\n" + najdiShoduNarozeninAZapasu() + "\n\n ");
+                break;
 
         }
     }
 
     private String vratHraceSNejvetsimPoctemVelkychPiv() {
         Hrac hrac = null;
-       /* int maximalniPocetPiv = 0;
+        int maximalniPocetPiv = 0;
         int seznamHracuSize = seznamHracu.size();
         for (int i = 0; i < seznamHracuSize; i++) {
-            seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
             if (seznamHracu.get(i).getPocetPiv().getPocetVelkych() > maximalniPocetPiv) {
                 hrac = seznamHracu.get(i);
                 maximalniPocetPiv = hrac.getPocetPiv().getPocetVelkych();
             }
-        }*/
+        }
         if (hrac == null) {
             return "Nelze najít největšího pijana, protože si ještě nikdo nedal pivo???!!";
         }
@@ -340,13 +351,12 @@ public class MenuFrag extends Fragment {
         Hrac hrac = null;
         int maximalniPocetPiv = 0;
         int seznamHracuSize = seznamHracu.size();
-        /*for (int i = 0; i < seznamHracuSize; i++) {
-            seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
+        for (int i = 0; i < seznamHracuSize; i++) {
             if (seznamHracu.get(i).getPocetPiv().getPocetMalych() > maximalniPocetPiv) {
                 hrac = seznamHracu.get(i);
                 maximalniPocetPiv = hrac.getPocetPiv().getPocetMalych();
             }
-        }*/
+        }
         if (hrac == null) {
             return "Ještě nikdo si nedal malý pivo a to je dobře";
         } else {
@@ -355,22 +365,290 @@ public class MenuFrag extends Fragment {
     }
 
     private String vratZapasSNejvetsimPoctemVelkychPiv() {
-        Hrac hrac = null;
+        Zapas zapas = null;
         int maximalniPocetPiv = 0;
         int seznamZapasuSize = seznamZapasu.size();
         for (int i = 0; i < seznamZapasuSize; i++) {
-            seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
-            if (seznamHracu.get(i).getPocetPiv().getPocetVelkych() > maximalniPocetPiv) {
-                hrac = seznamHracu.get(i);
-                maximalniPocetPiv = hrac.getPocetPiv().getPocetVelkych();
+            if (seznamZapasu.get(i).getCelkovyPocetVelkychPiv() > maximalniPocetPiv) {
+                zapas = seznamZapasu.get(i);
+                maximalniPocetPiv = zapas.getCelkovyPocetVelkychPiv();
             }
         }
-        if (hrac == null) {
-            return "Nelze najít největšího pijana, protože si ještě nikdo nedal pivo???!!";
+        if (zapas == null) {
+            return "Nelze najít zápas s největším počtem kousků, jelikož zatím nikdo žádný nevypil??";
         }
         else {
-            return "Nejvíce velkých piv za historii si dal " + hrac.getJmeno() + " který vypil " + hrac.getPocetPiv().getPocetVelkych() + " piv";
+            return "Nejvíce velkých piv v historii padl v zápase se soupeřem " + zapas.getSouper() + " hraný " + Datum.zmenDatumDoFront(zapas.getDatum()) + " kdy se vypilo " + zapas.getCelkovyPocetVelkychPiv() + " piv";
         }
     }
+
+    private String vratZapasSNejvetsimPoctemMalychPiv() {
+        Zapas zapas = null;
+        int maximalniPocetPiv = 0;
+        int seznamZapasuSize = seznamZapasu.size();
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getCelkovyPocetMalychPiv() > maximalniPocetPiv) {
+                zapas = seznamZapasu.get(i);
+                maximalniPocetPiv = zapas.getCelkovyPocetMalychPiv();
+            }
+        }
+        if (zapas == null) {
+            return "Zatím se v žádném zápase nevypilo malé pivo. Díky!";
+        }
+        else {
+            return "Nejvíce malých piv v historii padl v zápase se soupeřem " + zapas.getSouper() + " hraný " + Datum.zmenDatumDoFront(zapas.getDatum()) + " kdy se vypilo " + zapas.getCelkovyPocetMalychPiv() + "malejch";
+        }
+    }
+
+    private String vratPocetVelkychTutoSezonu() {
+        Zapas zapas = new Zapas("srovnani", Datum.zformatuj(Datum.zjistiDnesniDatum()), false, null);
+        int maximalniPocetPiv = 0;
+        int seznamZapasuSize = seznamZapasu.size();
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getCelkovyPocetVelkychPiv() > maximalniPocetPiv && seznamZapasu.get(i).getSezona() == zapas.getSezona()) {
+                zapas = seznamZapasu.get(i);
+                maximalniPocetPiv = zapas.getCelkovyPocetVelkychPiv();
+            }
+        }
+        if (zapas == null) {
+            return "Tuto sezonu se v žádném zápase nevypilo žádné pivo";
+        }
+        else {
+            return "Nejvíce velkých piv v této sezoně " + zapas.getSezona() + " padlo v zápase se soupeřem " + zapas.getSouper() + " hraný " + Datum.zmenDatumDoFront(zapas.getDatum()) + " kdy se vypilo " + zapas.getCelkovyPocetVelkychPiv() + " piv";
+        }
+    }
+
+    private String vratPocetMalychTutoSezonu() {
+        Zapas zapas = new Zapas("srovnani", Datum.zformatuj(Datum.zjistiDnesniDatum()), false, null);
+        int maximalniPocetPiv = 0;
+        int seznamZapasuSize = seznamZapasu.size();
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getCelkovyPocetMalychPiv() > maximalniPocetPiv && seznamZapasu.get(i).getSezona() == zapas.getSezona()) {
+                zapas = seznamZapasu.get(i);
+                maximalniPocetPiv = zapas.getCelkovyPocetMalychPiv();
+            }
+        }
+        if (zapas == null) {
+            return "Tuto sezonu se v žádném zápase nevypilo žádné malé pivo. Díky";
+        }
+        else {
+            return "Nejvíce malých piv v této sezoně " + zapas.getSezona() + " padlo v zápase se soupeřem " + zapas.getSouper() + " hraný " + Datum.zmenDatumDoFront(zapas.getDatum()) + " kdy se vypilo " + zapas.getCelkovyPocetVelkychPiv() + "malých piv";
+        }
+    }
+
+    private String vratPorovnaniSezon() {
+        Sezona sezona = null;
+        int pocetZapasu = 0;
+        int maximalniPocetPiv = 0;
+        int seznamZapasuSize = seznamZapasu.size();
+        for (int j = 1; j < Sezona.values().length-1; j++) {
+            int sezonniPiva = 0;
+            int pocetSezonnichZapasu = 0;
+            for (int i = 0; i < seznamZapasuSize; i++) {
+                if (seznamZapasu.get(i).getSezona() == Sezona.zaradSezonuDleComba(j)) {
+                    sezonniPiva += seznamZapasu.get(i).getCelkovyPocetVelkychPiv();
+                    pocetSezonnichZapasu++;
+                }
+            }
+            if (sezonniPiva > maximalniPocetPiv) {
+                maximalniPocetPiv = sezonniPiva;
+                sezona = Sezona.zaradSezonuDleComba(j);
+                pocetZapasu = pocetSezonnichZapasu;
+            }
+        }
+        if (sezona == null) {
+            return "Zatím se nevypilo žádné pivo";
+        }
+        else {
+            return "Nejvíce velkých piv se vypilo v sezoně " + sezona + " kdy padlo celkem v " + pocetZapasu + " zápasech " + maximalniPocetPiv + " velkých piv";
+        }
+    }
+
+    private String vratPrumerPivNaHraceAFanouska() {
+        float pocetPiv = 0;
+        int seznamHracuSize = seznamHracu.size();
+        for (int i = 0; i < seznamHracuSize; i++) {
+            pocetPiv += seznamHracu.get(i).getPocetPiv().getPocetVelkych();
+        }
+        float prumer = pocetPiv/seznamHracuSize;
+        return "Za celou historii průměrně každý hráč a fanoušek trusu vypil " + prumer + " velkých piv za zápas";
+    }
+
+    private String vratPrumerPivNaHrace() {
+        float pocetPiv = 0;
+        int seznamHracuSize = seznamHracu.size();
+        for (int i = 0; i < seznamHracuSize; i++) {
+            if (!seznamHracu.get(i).isFanousek()) {
+                pocetPiv += seznamHracu.get(i).getPocetPiv().getPocetVelkych();
+            }
+        }
+        float prumer = pocetPiv/seznamHracuSize;
+        return "Za celou historii průměrně každý hráč trusu vypil " + prumer + " velkých piv za zápas";
+    }
+
+    private String vratPrumerPivNaFanouska() {
+        float pocetPiv = 0;
+        int seznamHracuSize = seznamHracu.size();
+        for (int i = 0; i < seznamHracuSize; i++) {
+            if (seznamHracu.get(i).isFanousek()) {
+                pocetPiv += seznamHracu.get(i).getPocetPiv().getPocetVelkych();
+            }
+        }
+        float prumer = pocetPiv/seznamHracuSize;
+        return "Za celou historii průměrně každý fanoušek trusu vypil " + prumer + " velkých piv za zápas";
+    }
+
+    private String vratPrumerPivNaZapas() {
+        float pocetPiv = 0;
+        int seznamZapasuSize = seznamZapasu.size();
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            pocetPiv += seznamZapasu.get(i).getCelkovyPocetVelkychPiv();
+        }
+        float prumer = pocetPiv/seznamZapasuSize;
+        return "Průměrně se v zápase Trusu vypije " + prumer + " velkých piv";
+    }
+
+    private String vratNejvyssiPrumerVZapase() {
+        Zapas zapas = null;
+        int seznamZapasuSize = seznamZapasu.size();
+        float prumer = 0;
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getCelkovyPocetVelkychPiv() / seznamZapasu.get(i).getSeznamHracu().size() > prumer) {
+                prumer = seznamZapasu.get(i).getCelkovyPocetVelkychPiv() / (float) seznamZapasu.get(i).getSeznamHracu().size();
+                zapas = seznamZapasu.get(i);
+            }
+        }
+
+        return "Nejvyšší průměr počtu vypitých piv v zápase proběhl na zápase se soupeřem " + zapas.getSouper() + " hraném v sezoně " + zapas.getSezona() +
+                " konkrétně " + Datum.zmenDatumDoFront(zapas.getDatum()) + ". Vypilo se " + zapas.getCelkovyPocetVelkychPiv() + " piv v " + zapas.getSeznamHracu().size() +
+                " lidech, což dělá průměr " + prumer + " na hráče";
+    }
+
+    private String vratNejnizsiPrumerVZapase() {
+        Zapas zapas = null;
+        int seznamZapasuSize = seznamZapasu.size();
+        float prumer = 1000;
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if ((seznamZapasu.get(i).getCelkovyPocetVelkychPiv() / seznamZapasu.get(i).getSeznamHracu().size() < prumer) && (seznamZapasu.get(i).getCelkovyPocetVelkychPiv() != 0)) {
+                prumer = seznamZapasu.get(i).getCelkovyPocetVelkychPiv() / (float) seznamZapasu.get(i).getSeznamHracu().size();
+                zapas = seznamZapasu.get(i);
+            }
+        }
+
+        return "Ostudný den Liščího Trusu, kdy proběhl rekord v nejnižším průměru počtu vypitých piv v zápase proběhl na zápase se soupeřem " + zapas.getSouper() + " hraném v sezoně " + zapas.getSezona() +
+                " konkrétně " + Datum.zmenDatumDoFront(zapas.getDatum()) + ". Vypilo se " + zapas.getCelkovyPocetVelkychPiv() + " piv v " + zapas.getSeznamHracu().size() +
+                " lidech, což dělá průměr " + prumer + " na hráče. Vzpomeňte si na to, až si budete objednávat další rundu!";
+    }
+
+    private String vratNejvetsiUcastVZapase() {
+        Zapas zapas = null;
+        int seznamZapasuSize = seznamZapasu.size();
+        int ucastVZapase = 0;
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getSeznamHracu().size() > ucastVZapase) {
+                ucastVZapase = seznamZapasu.get(i).getSeznamHracu().size();
+                zapas = seznamZapasu.get(i);
+            }
+        }
+        int pocetFans = 0;
+        for (int i = 0; i < zapas.getSeznamHracu().size(); i++) {
+            if (zapas.getSeznamHracu().get(i).isFanousek()) {
+                pocetFans++;
+            }
+        }
+        String fanousek;
+        if (pocetFans==1) {
+            fanousek = "z toho 1 fanoušek";
+        }
+        else if (pocetFans > 1 && pocetFans < 5) {
+            fanousek = "z toho " + pocetFans + " fanoušci";
+        }
+        else {
+            fanousek = "z toho " + pocetFans + " fanoušků";
+        }
+        String hrac;
+        if ((ucastVZapase-pocetFans)==1) {
+            hrac = "1 hráč";
+        }
+        else if ((ucastVZapase-pocetFans) > 1 && (ucastVZapase-pocetFans) < 5) {
+            hrac = pocetFans + " hráči";
+        }
+        else {
+            hrac = pocetFans + " hráčů";
+        }
+
+        return "Největší účast na zápase Liščího Trusu proběhla " + Datum.zmenDatumDoFront(zapas.getDatum()) + " se soupeřem " + zapas.getSouper() +
+                " kdy celkový počet účastníků byl " + ucastVZapase + " lidí " + fanousek + " a " + hrac +
+                ". Celkově se vypilo " + zapas.getCelkovyPocetVelkychPiv() + " velkých piv";
+    }
+
+    private String vratNejnizsiUcastVZapase() {
+        Zapas zapas = null;
+        int seznamZapasuSize = seznamZapasu.size();
+        int ucastVZapase = 1000;
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getSeznamHracu().size() < ucastVZapase) {
+                ucastVZapase = seznamZapasu.get(i).getSeznamHracu().size();
+                zapas = seznamZapasu.get(i);
+            }
+        }
+        int pocetFans = 0;
+        for (int i = 0; i < zapas.getSeznamHracu().size(); i++) {
+            if (zapas.getSeznamHracu().get(i).isFanousek()) {
+                pocetFans++;
+            }
+        }
+        String fanousek;
+        if (pocetFans==1) {
+            fanousek = "z toho 1 fanoušek";
+        }
+        else if (pocetFans > 1 && pocetFans < 5) {
+            fanousek = "z toho " + pocetFans + " fanoušci";
+        }
+        else {
+            fanousek = "z toho " + pocetFans + " fanoušků";
+        }
+        String hrac;
+        if ((ucastVZapase-pocetFans)==1) {
+            hrac = "1 hráč";
+        }
+        else if ((ucastVZapase-pocetFans) > 1 && (ucastVZapase-pocetFans) < 5) {
+            hrac = pocetFans + " hráči";
+        }
+        else {
+            hrac = pocetFans + " hráčů";
+        }
+        return "Nejnižší účast na zápase Liščího Trusu proběhla " + Datum.zmenDatumDoFront(zapas.getDatum()) + " se soupeřem " + zapas.getSouper() +
+                " kdy celkový počet účastníků byl " + ucastVZapase + " lidí " + fanousek + " a " + hrac +
+                ". Celkově se vypilo " + zapas.getCelkovyPocetVelkychPiv() + " velkých piv";
+    }
+
+    private String najdiShoduNarozeninAZapasu() {
+        List<String> seznamNarozenin = new ArrayList<>();
+        seznamNarozenin.add("Jedním ze zápasů kdy se zapíjely narozeniny pijana Liščího Trusu byl: \n");
+        int seznamZapasuSize = seznamZapasu.size();
+        int seznamHracuSize = seznamHracu.size();
+        Log.d(TAG, "seznam hráčů: " + seznamHracu);
+
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            for (int j = 0; j < seznamHracuSize; j++) {
+                if (Datum.setDniDoNarozenin(seznamZapasu.get(i).getDatum()) == (Datum.setDniDoNarozenin(seznamHracu.get(j).getDatum()))) {
+                    Log.d(TAG, "zápas: " + seznamZapasu.get(i) + Datum.setDniDoNarozenin(seznamZapasu.get(i).getDatum()) + " hráč: " + seznamHracu.get(j) + (Datum.setDniDoNarozenin(seznamHracu.get(j).getDatum())));
+                    seznamNarozenin.add(seznamZapasu.get(i) + " kdy se zapíjely narozeniny hráče " + seznamHracu.get(j).getJmeno() + " a vypilo se " + seznamZapasu.get(i).getCelkovyPocetVelkychPiv() + " piv\n");
+                }
+            }
+        }
+        if (seznamNarozenin.size() == 1) {
+            seznamNarozenin.clear();
+            seznamNarozenin.add("Zatím se nenašel zápas kdy by nějaký hráč zapíjel narozky. Už se všichni těšíme");
+        }
+        String odpoved = "";
+        for (int i = 0; i < seznamNarozenin.size(); i++) {
+            odpoved += seznamNarozenin.get(i);
+        }
+        return odpoved;
+    }
+
+
 }
 
