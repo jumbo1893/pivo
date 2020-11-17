@@ -77,9 +77,29 @@ public class PridatPivoFrag extends Fragment{
                 for(QueryDocumentSnapshot documentSnapshot : value) {
                     Zapas zapas = documentSnapshot.toObject(Zapas.class);
                     seznamZapasu.add(zapas);
-                    Log.d(TAG, "Automaticky načten seznam zápasů po změně " + seznamZapasu);
                 }
+                Log.d(TAG, "Automaticky načten seznam zápasů po změně " + seznamZapasu);
                 zobrazListViewDleSpinneru(seznamZapasu);
+            }
+
+        });
+
+        collectionReference = db.collection("hrac");
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d(TAG, "Chyba " + error.toString());
+                    return;
+                }
+                seznamHracu = new ArrayList<>();
+                seznamHracu.clear();
+                for(QueryDocumentSnapshot documentSnapshot : value) {
+                    Hrac hrac = documentSnapshot.toObject(Hrac.class);
+                    seznamHracu.add(hrac);
+
+                }
+                Log.d(TAG, "Automaticky načten seznam hráčů po změně " + seznamHracu);
             }
 
         });
@@ -99,8 +119,8 @@ public class PridatPivoFrag extends Fragment{
 
         //propojení tlačítek a kódu
         View view = inflater.inflate(R.layout.fragment_pridat_pivo, container, false);
-        lv_seznamZapasu = (ListView) view.findViewById(R.id.lv_seznamZapasu);
-        sp_sezony = (Spinner) view.findViewById(R.id.sp_sezony);
+        lv_seznamZapasu = view.findViewById(R.id.lv_seznamZapasu);
+        sp_sezony = view.findViewById(R.id.sp_sezony);
 
         sezonyArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.sezony));
         sezonyArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -150,6 +170,7 @@ public class PridatPivoFrag extends Fragment{
 
                         //vytvoření instance Hracmodelu, který nám řekne id hráče pro spárování s pivem a následné uložení do lokální proměnné
                         oznacenyHrac = (Hrac) parent.getItemAtPosition(position);
+
                         Log.d(TAG, "kliknuto na hráče " + oznacenyHrac);
 
 
@@ -173,7 +194,6 @@ public class PridatPivoFrag extends Fragment{
                         tv_jmenoHrace.setText(oznacenyHrac.getJmeno());
 
                         //hledáme zda již existuje záznam v databázi. Pro zobrazení edittextu
-                        //if (oznacenyHrac.getPocetPiv()> 0) {
                             et_pocetPiv.setText(String.valueOf(oznacenyHrac.getPocetPiv().getPocetVelkych()));
                             et_pocetPivMaly.setText(String.valueOf(oznacenyHrac.getPocetPiv().getPocetMalych()));
                             vyrovnaniMalychPiv = oznacenyHrac.getPocetPiv().getPocetMalych();

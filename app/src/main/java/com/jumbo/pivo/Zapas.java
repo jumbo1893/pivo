@@ -18,8 +18,6 @@ public class Zapas extends Polozka {
     private int pocetMalychPiv;
     private Hrac oznacenyHrac;
 
-    //sezona 4 = ostatní, 1 = jaro 2020, 2 = podzim 2020, 3 = jaro 2021
-
 
     private static final String TAG = Zapas.class.toString();
 
@@ -204,7 +202,7 @@ public class Zapas extends Polozka {
                 pocetPiv += seznamHracu.get(i).getPocetPiv().getPocetMalych();
             }
             catch (Exception e) {
-                Log.e(TAG, "pri vyberu celkovych poctu chub nastala chyba:" + e.toString());
+                Log.e(TAG, "pri vyberu celkovych poctu piv nastala chyba:" + e.toString());
             }
         }
         Log.d(TAG, "Z celkového počtu " + seznamHracu.size() + " hráčů vracím " + pocetPiv + " malých počet piv");
@@ -258,4 +256,5 @@ public class Zapas extends Polozka {
     public void odeberHrace(Hrac hrac) {
        seznamHracu.remove(hrac);
     }
+
 }

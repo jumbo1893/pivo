@@ -498,7 +498,7 @@ public class PridatZapasFrag extends Fragment {
     private void nastavVybraniHraceDialogUprava() {
         boolean obohaceniHrace = false;
         Log.d(TAG, "Kliknuto na zobrazení list view se seznamem hráčů který sou k dispozici " + seznamHracu);
-        //prepiseme metodu contains aby se dalo vyhledavat v arraylistu pomoci timestampu
+/*        //prepiseme metodu contains aby se dalo vyhledavat v arraylistu pomoci timestampu
         oznaceniHraciList = new ArrayList<Hrac>() {
             @Override
             public boolean contains(@Nullable Object o) {
@@ -512,7 +512,7 @@ public class PridatZapasFrag extends Fragment {
 
                 return super.contains(o);
             }
-        };
+        };*/
         oznaceniHraciList = oznacenyZapas.getSeznamHracu();
         final AlertDialog.Builder vyberHraceDialog = new AlertDialog.Builder(getActivity());
 

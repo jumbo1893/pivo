@@ -1,7 +1,7 @@
 package com.jumbo.pivo;
 
 
-
+import java.util.List;
 
 public class Hrac extends Polozka {
 
@@ -13,6 +13,7 @@ public class Hrac extends Polozka {
     //1 = detailní zobrazení pro seznam hráčů s datem narození a věkem, 0 pro spojení Hráč + jméno, 2 pro Hráč + jméno + počet piv
     private boolean oznacenyHrac;
     private Pivo pocetPiv;
+    private List<Zapas> seznamZapasu;
 
     /**konstruktor
      * @param jmeno jméno hráče
@@ -73,11 +74,18 @@ public class Hrac extends Polozka {
                 return "Hráč " + jmeno + ", datum narození: " + Datum.zmenDatumDoFront(datum) + ", věk: " + vek;
             }
         }
-        else {
-            if (zobrazeniPolozky == ZobrazeniPolozky.Pivni) {
+        else if (zobrazeniPolozky == ZobrazeniPolozky.Pivni) {
+            if (fanousek) {
                 return "Fanoušek " + jmeno + ", " + pocetPiv;
             } else {
                 return "Hráč " + jmeno + ", " + pocetPiv;
+            }
+        }
+        else {
+            if (fanousek) {
+                return "Fanoušek " + jmeno;
+            } else {
+                return "Hráč " + jmeno;
             }
         }
     }
@@ -151,6 +159,29 @@ public class Hrac extends Polozka {
         this.zobrazeniPolozky = zobrazeniPolozky;
     }
 
+    public List<Zapas> getSeznamZapasu() {
+        return seznamZapasu;
+    }
+
+    public void setSeznamZapasu(List<Zapas> seznamZapasu) {
+        this.seznamZapasu = seznamZapasu;
+    }
+
+    private void pridejPiva(Pivo pocetPiv) {
+        this.pocetPiv.pridejVelkaPiva(pocetPiv.getPocetVelkych());
+        this.pocetPiv.pridejMalaPiva(pocetPiv.getPocetMalych());
+
+    }
+
+    public void aktualizujZeZapasuPocetPiv(List<Zapas> seznamZapasu) {
+        int seznamZapasuSize = seznamZapasu.size();
+        getPocetPiv().vynulujPocetPiv();
+        for (int i = 0; i < seznamZapasuSize; i++) {
+            if (seznamZapasu.get(i).getSeznamHracu().contains(this)) {
+                pridejPiva(seznamZapasu.get(i).getSeznamHracu().get(seznamZapasu.get(i).getSeznamHracu().indexOf(this)).getPocetPiv());
+            }
+        }
+    }
 
 
 }

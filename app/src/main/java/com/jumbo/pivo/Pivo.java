@@ -48,6 +48,16 @@ public class Pivo extends Polozka {
     public void pridejVelkyPivo() {
         this.pocetVelkych++;
     }
+    public void pridejVelkaPiva(int pocetVelkych) {
+        this.pocetVelkych+=pocetVelkych;
+    }
+    public void pridejMalaPiva(int pocetMalych) {
+        this.pocetMalych+=pocetMalych;
+    }
+    public void vynulujPocetPiv() {
+        pocetVelkych = 0;
+        pocetMalych = 0;
+    }
 
 
 }

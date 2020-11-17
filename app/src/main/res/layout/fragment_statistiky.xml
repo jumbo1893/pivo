@@ -33,8 +33,18 @@
         android:text="@string/zobraz_celkove"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_seradit_lv"
         app:layout_constraintTop_toBottomOf="@+id/sp_vyberHraceSezony" />
+
+    <Button
+        android:id="@+id/btn_seradit_lv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seradit"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_celkoveStats"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_celkoveStats" />
 
     <ListView
         android:id="@+id/lv_seznam"

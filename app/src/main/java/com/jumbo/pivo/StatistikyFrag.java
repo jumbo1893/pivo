@@ -35,24 +35,28 @@ import java.util.List;
 
 public class StatistikyFrag extends Fragment {
 
-    private Button btn_hledej, btn_seradit, btn_ok, btn_celkoveStats;
+    private Button btn_hledej, btn_seradit_dialog_lv, btn_ok, btn_celkoveStats, btn_seradit_lv;
     private Switch sw_hracZapas;
     private Spinner sp_vyberHraceSezony, sp_podrobnyVyber;
     private TextView tv_nadpis, tv_statsCelkem;
     private ListView lv_seznam, lv_seznamVyber, lv_statsCelkem;
     private EditText et_hledej;
-    private boolean swZobrazeniZapasu;
+    //switch a globální proměnný podle kterejch se pozná jestli se má volat metoda s listview se řazenim nebo ne
+    private boolean swZobrazeniZapasu, serazeniZakladnihoLV = false, serazeniDialogovehoLV = false;
 
     private ArrayAdapter spinnerArrayAdapter;
     private ArrayAdapter spinnerDialogArrayAdapter;
     private ArrayAdapter listViewArrayAdapter;
     private ArrayAdapter celkemStatsArrayAdapter;
     private ArrayAdapter detailListViewAdapter;
-    private ValidacePoli validace = new ValidacePoli();
 
     private Polozka oznacenaPolozka;
     private int poziceSpinneru = 0;
     private int poziceSpinneruVDialogu = 0;
+    //Poslední slovo zadané do hledej. Používá se seřazení již vyfiltrovaného seznamu
+    private String hledaneSlovo;
+    //zda se má řadit seznam komplet či filtrovaný
+    private boolean bylNaposledFiltr;
 
     private List<Zapas> seznamZapasu;
     private List<Hrac> seznamHracu;
@@ -67,6 +71,25 @@ public class StatistikyFrag extends Fragment {
     public void onStart() {
         super.onStart();
         //kontrola jestli se něco změnilo na serveru ve firestore. Pokud ano vykoná se akce
+        collectionReferenceZapas = db.collection("zapas");
+        collectionReferenceZapas.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d(TAG, "Chyba " + error.toString());
+                    return;
+                }
+                seznamZapasu = new ArrayList<>();
+                seznamZapasu.clear();
+                for(QueryDocumentSnapshot documentSnapshot : value) {
+                    Zapas zapas = documentSnapshot.toObject(Zapas.class);
+                    seznamZapasu.add(zapas);
+                    Log.d(TAG, "Automaticky načten seznam zápasů po změně " + seznamZapasu);
+                }
+                zobrazListView(serazeniZakladnihoLV);
+            }
+
+        });
         collectionReferenceHrac = db.collection("hrac");
         collectionReferenceHrac.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -84,29 +107,11 @@ public class StatistikyFrag extends Fragment {
                     Log.d(TAG, "Automaticky načten seznam hráčů po změně " + seznamHracu);
                 }
                 seznamHracu.sort(new SeradHracePrvni());
-                zobrazListView();
+                zobrazListView(serazeniZakladnihoLV);
             }
 
         });
-        collectionReferenceZapas = db.collection("zapas");
-        collectionReferenceZapas.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    Log.d(TAG, "Chyba " + error.toString());
-                    return;
-                }
-                seznamZapasu = new ArrayList<>();
-                seznamZapasu.clear();
-                for(QueryDocumentSnapshot documentSnapshot : value) {
-                    Zapas zapas = documentSnapshot.toObject(Zapas.class);
-                    seznamZapasu.add(zapas);
-                    Log.d(TAG, "Automaticky načten seznam zápasů po změně " + seznamZapasu);
-                }
-                zobrazListView();
-            }
 
-        });
 
 
     }
@@ -123,12 +128,13 @@ public class StatistikyFrag extends Fragment {
 
         //propojení tlačítek a kódu
         View view = inflater.inflate(R.layout.fragment_statistiky, container, false);
-        btn_hledej = (Button) view.findViewById(R.id.btn_hledej);
-        sw_hracZapas = (Switch) view.findViewById(R.id.sw_hracZapas);
-        sp_vyberHraceSezony = (Spinner) view.findViewById(R.id.sp_vyberHraceSezony);
-        btn_celkoveStats = (Button) view.findViewById(R.id.btn_celkoveStats);
-        lv_seznam = (ListView) view.findViewById(R.id.lv_seznam);
-        et_hledej = (EditText) view.findViewById(R.id.et_hledej);
+        btn_hledej = view.findViewById(R.id.btn_hledej);
+        sw_hracZapas = view.findViewById(R.id.sw_hracZapas);
+        sp_vyberHraceSezony = view.findViewById(R.id.sp_vyberHraceSezony);
+        btn_celkoveStats = view.findViewById(R.id.btn_celkoveStats);
+        lv_seznam = view.findViewById(R.id.lv_seznam);
+        et_hledej = view.findViewById(R.id.et_hledej);
+        btn_seradit_lv = view.findViewById(R.id.btn_seradit_lv);
 
 
         //defaultní zobrazení při prvním zobrazení stránky
@@ -143,16 +149,21 @@ public class StatistikyFrag extends Fragment {
                     setSwZobrazeniZapasu(false);
                     sw_hracZapas.setText(R.string.zobrazeni_zapasu);
                     nastavZobrazeniSpinneru(false);
-                    zobrazListView();
+                    //měníme na false, aby to při změně obrazovky vždy bylo neseřažený
+                    serazeniZakladnihoLV = false;
+                    zobrazListView(serazeniZakladnihoLV);
                 }
                 else {
                     setSwZobrazeniZapasu(true);
                     sw_hracZapas.setText(R.string.zobrazeni_hracu);
                     nastavZobrazeniSpinneru(true);
-                    zobrazListView();
+                    //měníme na false, aby to při změně obrazovky vždy bylo neseřažený
+                    serazeniZakladnihoLV = false;
+                    zobrazListView(serazeniZakladnihoLV);
                 }
             }
         });
+        //tlačítko celkově
         btn_celkoveStats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,6 +172,33 @@ public class StatistikyFrag extends Fragment {
         });
         nastavZobrazeniSpinneru(swZobrazeniZapasu);
         nastavKlikNaListview();
+        //tlačítko seřadit
+        btn_seradit_lv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (serazeniZakladnihoLV) {
+                    serazeniZakladnihoLV = false;
+                }
+                else {
+                    serazeniZakladnihoLV = true;
+                }
+                //pokud byl naposled filtr voláme zobrazení listview s naposled hledaným slovem
+                if (bylNaposledFiltr) {
+                    zobrazFiltrovaneListView(serazeniZakladnihoLV, hledaneSlovo);
+                }
+                else {
+                    zobrazListView(serazeniZakladnihoLV);
+                }
+            }
+        });
+        //tlačítko hledej. Poslední hledané slovo se ukládá do paměti
+        btn_hledej.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hledaneSlovo = et_hledej.getText().toString();
+                zobrazFiltrovaneListView(serazeniZakladnihoLV, hledaneSlovo);
+            }
+        });
 
         return view;
     }
@@ -183,7 +221,7 @@ public class StatistikyFrag extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 poziceSpinneru = position;
-                zobrazListView();
+                zobrazListView(serazeniZakladnihoLV);
                 Log.d(TAG, "pozice spinneru " + position + " nastavuji jako " + poziceSpinneru);
 
             }
@@ -191,7 +229,7 @@ public class StatistikyFrag extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 poziceSpinneru = 0;
-                zobrazListView();
+                zobrazListView(serazeniZakladnihoLV);
                 Log.d(TAG, "pozice spinneru neni zadna, nastavuji jako " + poziceSpinneru);
             }
         });
@@ -294,7 +332,7 @@ public class StatistikyFrag extends Fragment {
             else {
                 //projedou se všechny pozice spinneru pro sezony
                 for (int i = 0; i < Sezona.values().length; i++) {
-                    //pomocí statické metody z enumu HracEnum se dopočítává jestli je spinner na jaké je spinner pozici
+                    //pomocí statické metody z enumu HracEnum se dopočítává na jaké je spinner pozici
                     //na pozici 0 se VŽDY dopočítávají celková piva za všechny sezony
                     if (i == 0) {
                         listCelkovychPiv.add("Celkově " + HracEnum.zaradHraceDleComba(poziceSpinneru).getMnozneCisloTextu() + "  vypili " + spocitejSezonniVelkaPiva(Sezona.Vse, HracEnum.zaradHraceDleComba(poziceSpinneru)) + " velkých a "
@@ -338,18 +376,22 @@ public class StatistikyFrag extends Fragment {
 
     //metoda co propojuje listview z xml s kodem pomocí vlastní metody
     //zároveň jde zde nastaveno co se má v listview zobrazovat - zbytečné to rozdělovat na 2 metody
-    private void zobrazListView() {
+    //pokud se má list seřadit, volá se s parametrem true
+    private void zobrazListView(boolean seradit) {
+        Log.d(TAG, "Zobrazuji základní listview...");
         List<Polozka> seznamProListView = new ArrayList<>();
+        try {
+            int seznamZapasuSize = seznamZapasu.size();
+
         //pokud je zobrazen ve switchi zápas
         if (swZobrazeniZapasu) {
             //hodíme stranou velikost zápasů aby se to ve for cyklu nepočítalo pořád dokola
-            int seznamZapasuSize = seznamZapasu.size();
             Sezona sezona = Sezona.zaradSezonuDleComba(poziceSpinneru);
             //projíždíme for cyklem všechny zápasy
             for (int i = 0; i < seznamZapasuSize; i++) {
                 //pokud je spinner na pozici všechny zápasy či na pozici sezony které odpovídá zápas v databázi tak to přidáme do listview
                 if (sezona == Sezona.Vse || sezona == seznamZapasu.get(i).getSezona()) {
-                    seznamZapasu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Zakladni);
+                    seznamZapasu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
                     seznamProListView.add(seznamZapasu.get(i));
                 }
             }
@@ -357,22 +399,79 @@ public class StatistikyFrag extends Fragment {
         else {
             int seznamHracuSize = seznamHracu.size();
             HracEnum hracEnum = HracEnum.zaradHraceDleComba(poziceSpinneru);
+            //projíždíme seznam hráčů
             for (int i = 0; i < seznamHracuSize; i++) {
+                //vyfiltrujem dle podmínek
                 if (hracEnum == HracEnum.Vse || hracEnum.isFanousek() == seznamHracu.get(i).isFanousek()) {
-                    seznamHracu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Zakladni);
+                    //voláme metodu pro zjištění celkového počtu piv
+                    seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
+                    seznamHracu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
                     seznamProListView.add(seznamHracu.get(i));
                 }
             }
         }
-
+        //řadíme pokud musíme
+        if (seradit) {
+            seznamProListView.sort(new SeradPodlePiv());
+        }
         listViewArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, seznamProListView);
         lv_seznam.setAdapter(listViewArrayAdapter);
+        bylNaposledFiltr = false;
+        }
+        catch (Exception e) {
+        }
+    }
+
+    private void zobrazFiltrovaneListView(boolean seradit, String filtr) {
+        Log.d(TAG, "Zobrazuji základní listview...");
+        List<Polozka> seznamProListView = new ArrayList<>();
+        try {
+            int seznamZapasuSize = seznamZapasu.size();
+
+            //pokud je zobrazen ve switchi zápas
+            if (swZobrazeniZapasu) {
+                //hodíme stranou velikost zápasů aby se to ve for cyklu nepočítalo pořád dokola
+                Sezona sezona = Sezona.zaradSezonuDleComba(poziceSpinneru);
+                //projíždíme for cyklem všechny zápasy
+                for (int i = 0; i < seznamZapasuSize; i++) {
+                    //pokud je spinner na pozici všechny zápasy či na pozici sezony které odpovídá zápas v databázi tak to přidáme do listview
+                    if ((sezona == Sezona.Vse || sezona == seznamZapasu.get(i).getSezona()) && seznamZapasu.get(i).toString().toLowerCase().contains(filtr.toLowerCase().trim())) {
+                        seznamZapasu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
+                        seznamProListView.add(seznamZapasu.get(i));
+                    }
+                }
+            }
+            else {
+                int seznamHracuSize = seznamHracu.size();
+                HracEnum hracEnum = HracEnum.zaradHraceDleComba(poziceSpinneru);
+                //projíždíme seznam hráčů
+                for (int i = 0; i < seznamHracuSize; i++) {
+                    //vyfiltrujem dle podmínek
+                    if ((hracEnum == HracEnum.Vse || hracEnum.isFanousek() == seznamHracu.get(i).isFanousek()) && seznamHracu.get(i).toString().toLowerCase().contains(filtr.toLowerCase().trim())) {
+                        //voláme metodu pro zjištění celkového počtu piv
+                        seznamHracu.get(i).aktualizujZeZapasuPocetPiv(seznamZapasu);
+                        seznamHracu.get(i).setZobrazeniPolozky(ZobrazeniPolozky.Pivni);
+                        seznamProListView.add(seznamHracu.get(i));
+                    }
+                }
+            }
+            if (seradit) {
+                seznamProListView.sort(new SeradPodlePiv());
+            }
+            listViewArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, seznamProListView);
+            lv_seznam.setAdapter(listViewArrayAdapter);
+            bylNaposledFiltr = true;
+        }
+        catch (Exception e) {
+        }
     }
     // nastavuje dialog pro kliknutí na položku v hlavním listview
     private void nastavKlikNaListview() {
         lv_seznam.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //měníme na false, aby primárně nebyly položky seřazené
+                serazeniDialogovehoLV = false;
 
                 oznacenaPolozka = (Polozka) parent.getItemAtPosition(position);
 
@@ -382,7 +481,7 @@ public class StatistikyFrag extends Fragment {
 
                 //definování tlačítek a layoutu v dialogu pro zobrazení statistik
                 View lvView = getLayoutInflater().inflate(R.layout.dialog_vyber_statistiky, null);
-                btn_seradit = lvView.findViewById(R.id.btn_seradit);
+                btn_seradit_dialog_lv = lvView.findViewById(R.id.btn_seradit);
                 btn_ok = lvView.findViewById(R.id.btn_ok);
                 lv_seznamVyber =  lvView.findViewById(R.id.lv_seznamVyber);
                 sp_podrobnyVyber = lvView.findViewById(R.id.sp_podrobnyVyber);
@@ -422,7 +521,7 @@ public class StatistikyFrag extends Fragment {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                        zobrazListViewDialogu(position, false);
+                        zobrazListViewDialogu(position, serazeniDialogovehoLV);
                         poziceSpinneruVDialogu = position;
                     }
 
@@ -432,10 +531,17 @@ public class StatistikyFrag extends Fragment {
                     }
                 });
 
-                btn_seradit.setOnClickListener(new View.OnClickListener() {
+                //seřazení dialogového listView
+                btn_seradit_dialog_lv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        zobrazListViewDialogu(poziceSpinneruVDialogu, true);
+                        if (serazeniDialogovehoLV) {
+                            serazeniDialogovehoLV = false;
+                        }
+                        else {
+                            serazeniDialogovehoLV = true;
+                        }
+                        zobrazListViewDialogu(poziceSpinneruVDialogu, serazeniDialogovehoLV);
                     }
                 });
 
@@ -472,7 +578,7 @@ public class StatistikyFrag extends Fragment {
             if (celkemVelkych > 0 || celkemMalych > 0) {
                 listPolozekNaListView.add(0,"");
                 listPolozekNaListView.add(0, "Celkem se v zápase vypilo " + celkemVelkych + " velkých a " + celkemMalych + " malých piv");
-                //pokud se zavolá metoda s parametrem seřazení, tak se nejdřív seznam hráčů seřadí podle počtu vypitejch pivek
+                //pokud se zavolá metoda s parametrem seřazení, tak se nejdřív seznam zápasů seřadí podle počtu vypitejch pivek
                 if (seradit) {
                     listPolozekProZpracovani.sort(new SeradPodlePiv());
                 }
@@ -481,6 +587,7 @@ public class StatistikyFrag extends Fragment {
             else {
                 listPolozekNaListView.add(0,"Zobrazuji seznam hanby:");
                 listPolozekNaListView.add(0,"V tomto zápase se žádné pivo nevypilo!!??");
+                //pokud chce uživatel seřadit seznam bez piv, tak se o to ani nemá smysl pokoušet, pouze dostane odpověď, že je na hlavu
                 if (seradit) {
                     Toast.makeText(getActivity(), "Co chceš řadit? Nikdo žádný pivo nevypil vole!!", Toast.LENGTH_SHORT).show();
                 }
@@ -500,8 +607,8 @@ public class StatistikyFrag extends Fragment {
                     //zde projíždíme loopem v konkrétním zápase seznam hráčů
                     for (int j = 0; j < seznamHracuSize; j++) {
                         Log.d(TAG, "projíždím zápas ze seznamu zápasů " + seznamZapasu.get(i) + " a hráče ze seznamu hráčů " + seznamZapasu.get(i).getSeznamHracu().get(j));
-                        //porovnáváme podle timestampu(id) jestli souhlasí hráč s označeneným hráčem. Pokud je nalezen, breaknem to, víc nepotřebujem
-                        if (oznacenyHrac.getTimestamp() == seznamZapasu.get(i).getSeznamHracu().get(j).getTimestamp()) {
+                        //porovnáváme podle přepsané metody equals jestli souhlasí hráč s označeneným hráčem. Pokud je nalezen, breaknem to, víc nepotřebujem
+                        if (oznacenyHrac.equals(seznamZapasu.get(i).getSeznamHracu().get(j))) {
                             //voláme metodu která určí zobrazování zápasu jenom s pivama tohoto hráče
                             seznamZapasu.get(i).nastavPivniZobrazeniProJednohoHrace(seznamZapasu.get(i).getSeznamHracu().get(j));
                             listPolozekProZpracovani.add(seznamZapasu.get(i));
@@ -512,22 +619,26 @@ public class StatistikyFrag extends Fragment {
                     }
                 }
             }
+            //pokud je počet piv větší než nula přidáme položku celkem jako první do listu na zobrazení v listview
             if (celkemVelkych > 0 || celkemMalych > 0) {
                 listPolozekNaListView.add(0,"");
                 listPolozekNaListView.add(0, "Celkem hráč vypil " + celkemVelkych + " velkých a " + celkemMalych + " malých piv");
+                //pokud se zavolá metoda s parametrem seřazení, tak se seznam hráčů seřadí podle počtu vypitejch pivek
                 if (seradit) {
                     listPolozekProZpracovani.sort(new SeradPodlePiv());
                 }
             }
+            //pokud není žádné pivo vypité tak se vrátí vyhubování
             else {
                 listPolozekNaListView.add(0,"");
                 listPolozekNaListView.add(0,"Tento hráč zatím žádné pivo nevypil!!??");
+                //pokud chce uživatel seřadit seznam bez piv, tak se o to ani nemá smysl pokoušet, pouze dostane odpověď, že je na hlavu
                 if (seradit) {
                     Toast.makeText(getActivity(), "Co chceš řadit? Nikdo žádný pivo nevypil vole!!", Toast.LENGTH_SHORT).show();
                 }
             }
         }
-        //Na položky se zavolá ve for loopu metoda to string a přidá se do listu stringů. Je to tu jenom kvůli tomu řazení, jinak by to moh bejt rovnou lis stringů
+        //Na položky se zavolá ve for loopu metoda to string a přidá se do listu stringů. Je to tu jenom kvůli tomu řazení, jinak by to moh bejt rovnou list stringů
         for (Polozka polozka : listPolozekProZpracovani) {
             listPolozekNaListView.add(polozka.toString());
         }

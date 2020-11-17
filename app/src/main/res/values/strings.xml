@@ -44,7 +44,7 @@
     <string name="zobrazeni_hracu">Přepni pro zobrazení hráčů</string>
     <string name="celkove">celkově</string>
     <string name="seradit">seřadit podle výkonu</string>
-    <string name="zobraz_celkove">zobraz celkove statistiky</string>
+    <string name="zobraz_celkove">zobraz celkový</string>
     <string name="tv_statistiky_celkove_sezony">Celkové statistiky dle sezony</string>
     <string name="tv_statistiky_celkove_ucastnici">Celkové statistiky dle hráčů/fanoušků</string>
     <string name="info_app">Informace o aplikaci</string>
