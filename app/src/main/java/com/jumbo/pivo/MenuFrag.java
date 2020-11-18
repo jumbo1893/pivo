@@ -329,6 +329,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String s hráčem co má zatím největší počet vypitých velkých piv. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratHraceSNejvetsimPoctemVelkychPiv() {
         Hrac hrac = null;
         int maximalniPocetPiv = 0;
@@ -347,6 +350,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String s hráčem co má zatím největěěí počet vypitých malých piv. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratHraceSNejvetsimPoctemMalychPiv() {
         Hrac hrac = null;
         int maximalniPocetPiv = 0;
@@ -364,6 +370,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String se zápase kde je zatím největší počet vypitých velkých piv. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratZapasSNejvetsimPoctemVelkychPiv() {
         Zapas zapas = null;
         int maximalniPocetPiv = 0;
@@ -382,6 +391,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String se zápase kde je zatím největší počet vypitých malých piv. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratZapasSNejvetsimPoctemMalychPiv() {
         Zapas zapas = null;
         int maximalniPocetPiv = 0;
@@ -400,6 +412,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String s počtem vypitých velkých piv pro tuto sezonu. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratPocetVelkychTutoSezonu() {
         Zapas zapas = new Zapas("srovnani", Datum.zformatuj(Datum.zjistiDnesniDatum()), false, null);
         int maximalniPocetPiv = 0;
@@ -418,6 +433,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String s počtem vypitých malých piv pro tuto sezonu. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratPocetMalychTutoSezonu() {
         Zapas zapas = new Zapas("srovnani", Datum.zformatuj(Datum.zjistiDnesniDatum()), false, null);
         int maximalniPocetPiv = 0;
@@ -436,6 +454,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return vrací String se sezonou kdy se vypilo nejvíc piv, plus odpovídající údaje. Pokud zatím nikdo nic nevypil, vrací větu s tímto významem
+     */
     private String vratPorovnaniSezon() {
         Sezona sezona = null;
         int pocetZapasu = 0;
@@ -464,6 +485,9 @@ public class MenuFrag extends Fragment {
         }
     }
 
+    /**
+     * @return Vrací průměrný počet vypitých piv na jednoho účastníka zápasu
+     */
     private String vratPrumerPivNaHraceAFanouska() {
         float pocetPiv = 0;
         int seznamHracuSize = seznamHracu.size();
@@ -474,6 +498,9 @@ public class MenuFrag extends Fragment {
         return "Za celou historii průměrně každý hráč a fanoušek trusu vypil " + prumer + " velkých piv za zápas";
     }
 
+    /**
+     * @return Vrací průměrný počet vypitých piv na jednoho hráče
+     */
     private String vratPrumerPivNaHrace() {
         float pocetPiv = 0;
         int seznamHracuSize = seznamHracu.size();
@@ -486,6 +513,9 @@ public class MenuFrag extends Fragment {
         return "Za celou historii průměrně každý hráč trusu vypil " + prumer + " velkých piv za zápas";
     }
 
+    /**
+     * @return Vrací průměrný počet vypitých piv na jednoho fanouška
+     */
     private String vratPrumerPivNaFanouska() {
         float pocetPiv = 0;
         int seznamHracuSize = seznamHracu.size();
@@ -498,6 +528,9 @@ public class MenuFrag extends Fragment {
         return "Za celou historii průměrně každý fanoušek trusu vypil " + prumer + " velkých piv za zápas";
     }
 
+    /**
+     * @return Vrací průměrný počet vypitých piv v jednom zápase
+     */
     private String vratPrumerPivNaZapas() {
         float pocetPiv = 0;
         int seznamZapasuSize = seznamZapasu.size();
@@ -508,6 +541,9 @@ public class MenuFrag extends Fragment {
         return "Průměrně se v zápase Trusu vypije " + prumer + " velkých piv";
     }
 
+    /**
+     * @return Vrací dosud nejvyšší průměrný počet vypitých piv v jednom zápase
+     */
     private String vratNejvyssiPrumerVZapase() {
         Zapas zapas = null;
         int seznamZapasuSize = seznamZapasu.size();
@@ -524,6 +560,9 @@ public class MenuFrag extends Fragment {
                 " lidech, což dělá průměr " + prumer + " na hráče";
     }
 
+    /**
+     * @return Vrací dosud nejnižší průměrný počet vypitých piv v jednom zápase
+     */
     private String vratNejnizsiPrumerVZapase() {
         Zapas zapas = null;
         int seznamZapasuSize = seznamZapasu.size();
@@ -540,6 +579,9 @@ public class MenuFrag extends Fragment {
                 " lidech, což dělá průměr " + prumer + " na hráče. Vzpomeňte si na to, až si budete objednávat další rundu!";
     }
 
+    /**
+     * @return Vrací dosud nejvyšší účast jednom zápase spolu s podrobnými údaji
+     */
     private String vratNejvetsiUcastVZapase() {
         Zapas zapas = null;
         int seznamZapasuSize = seznamZapasu.size();
@@ -582,6 +624,9 @@ public class MenuFrag extends Fragment {
                 ". Celkově se vypilo " + zapas.getCelkovyPocetVelkychPiv() + " velkých piv";
     }
 
+    /**
+     * @return Vrací dosud nejnižší účast jednom zápase spolu s podrobnými údaji
+     */
     private String vratNejnizsiUcastVZapase() {
         Zapas zapas = null;
         int seznamZapasuSize = seznamZapasu.size();
@@ -623,6 +668,9 @@ public class MenuFrag extends Fragment {
                 ". Celkově se vypilo " + zapas.getCelkovyPocetVelkychPiv() + " velkých piv";
     }
 
+    /**
+     * @return vrací seznam hráčů, kteří slavili (nebo budou slavit v případě budoucího data) narozeniny na zápase spolu s údajem o počtu vypitých piv. Pokud nikdo neslavil vrací se odpovídající text
+     */
     private String najdiShoduNarozeninAZapasu() {
         List<String> seznamNarozenin = new ArrayList<>();
         seznamNarozenin.add("Jedním ze zápasů kdy se zapíjely narozeniny pijana Liščího Trusu byl: \n");
