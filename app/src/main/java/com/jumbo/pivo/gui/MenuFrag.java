@@ -1,5 +1,5 @@
 
-package com.jumbo.pivo.gui.piva;
+package com.jumbo.pivo.gui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -581,7 +581,7 @@ public class MenuFrag extends Fragment {
             }
         }
 
-        return "Ostudný den Liščího Trusu, kdy proběhl rekord v nejnižším průměru počtu vypitých piv v zápase proběhl na zápase se soupeřem " + zapas.getSouper() + " hraném v sezoně " + zapas.getSezona() +
+        return "Ostudný den Liščího Trusu, kdy byl pokořen rekord v nejnižším průměru počtu vypitých piv v zápase proběhl na zápase se soupeřem " + zapas.getSouper() + " hraném v sezoně " + zapas.getSezona() +
                 " konkrétně " + Datum.zmenDatumDoFront(zapas.getDatum()) + ". Vypilo se " + zapas.getCelkovyPocetVelkychPiv() + " piv v " + zapas.getSeznamHracu().size() +
                 " lidech, což dělá průměr " + prumer + " na hráče. Vzpomeňte si na to, až si budete objednávat další rundu!";
     }

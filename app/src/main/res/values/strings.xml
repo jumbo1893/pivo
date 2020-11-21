@@ -6,6 +6,11 @@
     <string name="tab_text_4">Vypitá piva</string>
     <string name="tab_text_5">Statistiky</string>
 
+    <string name="tab__pokuty_text_1">Úvod</string>
+    <string name="tab__pokuty_text_2">Přidat pokutu</string>
+    <string name="tab__pokuty_text_3">Nastav pokutu</string>
+
+
 
     <string name="jmenoHrace">Jméno Hráče</string>
     <string name="datumNarozeniHrace">Datum narození</string>
